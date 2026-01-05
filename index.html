@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>복식부기 가계부</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>복식부기 가계부</h1>
+            <div class="actions">
+                <button id="exportBtn" class="btn btn-primary">엑셀 내보내기</button>
+                <button id="importBtn" class="btn btn-secondary">엑셀 불러오기</button>
+                <input type="file" id="fileInput" accept=".xlsx" style="display: none;">
+            </div>
+        </header>
+
+        <main>
+            <!-- 거래 입력 폼 -->
+            <section class="transaction-form">
+                <h2>거래 입력</h2>
+                <form id="transactionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">날짜</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">적요</label>
+                            <input type="text" id="description" required placeholder="거래 내용">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="debitAccount">차변 계정</label>
+                            <select id="debitAccount" required>
+                                <option value="">선택하세요</option>
+                                <option value="현금">현금</option>
+                                <option value="은행예금">은행예금</option>
+                                <option value="식비">식비</option>
+                                <option value="교통비">교통비</option>
+                                <option value="주거비">주거비</option>
+                                <option value="통신비">통신비</option>
+                                <option value="의료비">의료비</option>
+                                <option value="문화생활비">문화생활비</option>
+                                <option value="기타비용">기타비용</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="debitAmount">차변 금액</label>
+                            <input type="number" id="debitAmount" required min="0" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="creditAccount">대변 계정</label>
+                            <select id="creditAccount" required>
+                                <option value="">선택하세요</option>
+                                <option value="현금">현금</option>
+                                <option value="은행예금">은행예금</option>
+                                <option value="급여">급여</option>
+                                <option value="사업소득">사업소득</option>
+                                <option value="이자수입">이자수입</option>
+                                <option value="기타수입">기타수입</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditAmount">대변 금액</label>
+                            <input type="number" id="creditAmount" required min="0" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">저장</button>
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- 거래 목록 -->
+            <section class="transaction-list">
+                <h2>거래 내역</h2>
+                <div class="filter-section">
+                    <input type="month" id="filterMonth" placeholder="월별 필터">
+                    <select id="filterAccount">
+                        <option value="">전체 계정</option>
+                        <option value="현금">현금</option>
+                        <option value="은행예금">은행예금</option>
+                        <option value="식비">식비</option>
+                        <option value="교통비">교통비</option>
+                        <option value="급여">급여</option>
+                    </select>
+                    <button id="applyFilter" class="btn btn-secondary">필터 적용</button>
+                    <button id="clearFilter" class="btn btn-secondary">초기화</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th>날짜</th>
+                                <th>적요</th>
+                                <th>차변 계정</th>
+                                <th>차변 금액</th>
+                                <th>대변 계정</th>
+                                <th>대변 금액</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionBody">
+                            <!-- 거래 내역이 여기 표시됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 요약 정보 -->
+            <section class="summary">
+                <h2>계정별 잔액</h2>
+                <div id="accountSummary" class="summary-grid">
+                    <!-- 계정별 잔액이 여기 표시됩니다 -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
