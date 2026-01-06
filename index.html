@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>복식부기 가계부</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -47,9 +49,11 @@
                     <div class="form-column">
                         <h3>수입 금액</h3>
                         <input type="number" id="incomeAmount" class="amount-input" placeholder="금액 입력" min="0">
-                        <button id="incomeSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                        <button id="incomeCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                     </div>
+                </div>
+                <div class="form-actions-bottom">
+                    <button id="incomeSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                    <button id="incomeCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                 </div>
             </section>
 
@@ -93,9 +97,11 @@
                             <label>지출 금액</label>
                             <input type="number" id="expenseAmount" class="amount-input" placeholder="금액 입력" min="0">
                         </div>
-                        <button id="expenseSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                        <button id="expenseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                     </div>
+                </div>
+                <div class="form-actions-bottom">
+                    <button id="expenseSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                    <button id="expenseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                 </div>
             </section>
 
@@ -115,7 +121,8 @@
                                 <label>항목명</label>
                                 <input type="text" id="immediateExpenseName" class="text-input" placeholder="예: 사무용품">
                                 <label>금액</label>
-                                <input type="number" id="immediateExpenseAmount" class="amount-input" placeholder="금액 입력" min="0">
+                                <input type="number" id="immediateExpenseAmount" class="amount-input"
+                                    placeholder="금액 입력" min="0">
                             </div>
                         </div>
                         <div id="depreciable-asset" class="tab-content">
@@ -131,9 +138,11 @@
                                 <label>재고명</label>
                                 <input type="text" id="inventoryName" class="text-input" placeholder="예: 상품명">
                                 <label>수량</label>
-                                <input type="number" id="inventoryQuantity" class="text-input" placeholder="수량" min="1" value="1">
+                                <input type="number" id="inventoryQuantity" class="text-input" placeholder="수량" min="1"
+                                    value="1">
                                 <label>단가</label>
-                                <input type="number" id="inventoryPrice" class="amount-input" placeholder="단가 입력" min="0">
+                                <input type="number" id="inventoryPrice" class="amount-input" placeholder="단가 입력"
+                                    min="0">
                             </div>
                         </div>
                     </div>
@@ -151,7 +160,7 @@
                                 <button class="payment-method-btn" data-method="할부">할부</button>
                             </div>
                         </div>
-                        <div id="split-payment" class="payment-mode-content">
+                        <div class="payment-mode-content" id="split-payment">
                             <div class="split-payment-section">
                                 <label>현금/예금 지불</label>
                                 <div class="split-payment-row">
@@ -159,19 +168,23 @@
                                         <option value="현금">현금</option>
                                         <option value="은행예금">은행예금</option>
                                     </select>
-                                    <input type="number" id="splitCashAmount" class="split-input" placeholder="금액" min="0">
+                                    <input type="number" id="splitCashAmount" class="split-input" placeholder="금액"
+                                        min="0">
                                 </div>
                                 <label>할부 금액</label>
-                                <input type="number" id="splitInstallmentAmount" class="split-input" placeholder="할부 금액" min="0">
+                                <input type="number" id="splitInstallmentAmount" class="split-input" placeholder="할부 금액"
+                                    min="0">
                                 <div class="total-display">
                                     <span>총 금액: </span>
                                     <span id="splitTotalAmount">0원</span>
                                 </div>
                             </div>
                         </div>
-                        <button id="purchaseSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                        <button id="purchaseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                     </div>
+                </div>
+                <div class="form-actions-bottom">
+                    <button id="purchaseSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                    <button id="purchaseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                 </div>
             </section>
 
@@ -213,7 +226,8 @@
                         <div id="sell-other" class="tab-content">
                             <div class="sale-input-section">
                                 <label>품목명</label>
-                                <input type="text" id="otherSaleItemName" class="text-input" placeholder="예: 중고 자전거, 책상">
+                                <input type="text" id="otherSaleItemName" class="text-input"
+                                    placeholder="예: 중고 자전거, 책상">
                             </div>
                         </div>
                     </div>
@@ -238,9 +252,11 @@
                         <div id="financial-product" class="tab-content active">
                             <div class="investment-input-section">
                                 <label>상품명</label>
-                                <input type="text" id="financialProductName" class="text-input" placeholder="예: 삼성전자 주식, 국채">
+                                <input type="text" id="financialProductName" class="text-input"
+                                    placeholder="예: 삼성전자 주식, 국채">
                                 <label>투자 금액</label>
-                                <input type="number" id="financialProductAmount" class="amount-input" placeholder="금액 입력" min="0">
+                                <input type="number" id="financialProductAmount" class="amount-input"
+                                    placeholder="금액 입력" min="0">
                             </div>
                         </div>
                         <div id="long-deposit" class="tab-content">
@@ -248,7 +264,8 @@
                                 <label>예적금명</label>
                                 <input type="text" id="longDepositName" class="text-input" placeholder="예: 정기예금, 청약저축">
                                 <label>금액</label>
-                                <input type="number" id="longDepositAmount" class="amount-input" placeholder="금액 입력" min="0">
+                                <input type="number" id="longDepositAmount" class="amount-input" placeholder="금액 입력"
+                                    min="0">
                             </div>
                         </div>
                         <div id="deposit" class="tab-content">
@@ -256,7 +273,8 @@
                                 <label>보증금 항목</label>
                                 <input type="text" id="depositName" class="text-input" placeholder="예: 아파트 전세금, 원룸 보증금">
                                 <label>금액</label>
-                                <input type="number" id="depositAmount" class="amount-input" placeholder="금액 입력" min="0">
+                                <input type="number" id="depositAmount" class="amount-input" placeholder="금액 입력"
+                                    min="0">
                             </div>
                         </div>
                     </div>
@@ -428,4 +446,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

@@ -62,7 +62,7 @@ h2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    max-width: 600px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px 0;
 }
