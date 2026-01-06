@@ -104,8 +104,8 @@ h2 {
     background: linear-gradient(135deg, #5568d3 0%, #65408a 100%);
 }
 
-/* 수입/지출 입력 폼 (2열 레이아웃) */
-.income-form, .expense-form {
+/* 수입/지출/구입/판매/투자/회수 입력 폼 (2열 레이아웃) */
+.income-form, .expense-form, .purchase-form, .sale-form, .investment-form, .collection-form {
     max-width: 900px;
     margin: 0 auto;
 }
@@ -183,8 +183,8 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* 지출 입력 폼 추가 스타일 */
-.expense-type-selector {
+/* 지출/구입/판매/투자 입력 폼 추가 스타일 */
+.expense-type-selector, .purchase-type-selector, .sale-type-selector, .investment-type-selector {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
@@ -305,6 +305,298 @@ h2 {
     display: block;
     font-weight: 600;
     margin-bottom: 10px;
+    color: #555;
+}
+
+/* 구입 입력 폼 추가 스타일 */
+.purchase-input-section {
+    padding: 15px 0;
+}
+
+.purchase-input-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 12px;
+    color: #555;
+}
+
+.text-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.payment-mode-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.mode-btn:hover {
+    border-color: #3498db;
+}
+
+.mode-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.payment-mode-content {
+    display: none;
+}
+
+.payment-mode-content.active {
+    display: block;
+}
+
+.payment-method-btn {
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.payment-method-btn:hover {
+    border-color: #3498db;
+    background: #e3f2fd;
+}
+
+.payment-method-btn.selected {
+    border-color: #3498db;
+    background: #3498db;
+    color: white;
+}
+
+.split-payment-section {
+    padding: 10px 0;
+}
+
+.split-payment-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 12px;
+    color: #555;
+}
+
+.split-payment-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.split-select {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.split-select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.split-input {
+    flex: 2;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-align: right;
+}
+
+.split-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.total-display {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.total-display span:last-child {
+    color: #3498db;
+}
+
+/* 판매 입력 폼 추가 스타일 */
+.receive-section {
+    margin-bottom: 20px;
+}
+
+.receive-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.receive-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.receive-btn {
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.receive-btn:hover {
+    border-color: #27ae60;
+    background: #e8f5e9;
+    transform: translateX(5px);
+}
+
+.receive-btn.selected {
+    border-color: #27ae60;
+    background: #27ae60;
+    color: white;
+}
+
+.sale-item-list {
+    max-height: 350px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+.sale-item {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+}
+
+.sale-item:hover {
+    border-color: #27ae60;
+    background: #e8f5e9;
+}
+
+.sale-item.selected {
+    border-color: #27ae60;
+    background: #27ae60;
+    color: white;
+}
+
+.sale-item-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.sale-item-info {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.sale-input-section {
+    padding: 15px 0;
+}
+
+.sale-input-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.form-actions-bottom {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+.form-actions-bottom .btn {
+    flex: 1;
+}
+
+/* 투자/회수 입력 폼 추가 스타일 */
+.invest-payment-btn, .collect-receive-btn {
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.invest-payment-btn:hover, .collect-receive-btn:hover {
+    border-color: #3498db;
+    background: #e3f2fd;
+}
+
+.invest-payment-btn.selected {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+.collect-receive-btn.selected {
+    border-color: #f093fb;
+    background: #f093fb;
+    color: white;
+}
+
+.investment-input-section {
+    padding: 15px 0;
+}
+
+.investment-input-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 12px;
     color: #555;
 }
 
