@@ -89,19 +89,19 @@ h2 {
 }
 
 .debit-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.debit-btn:hover {
-    background: linear-gradient(135deg, #5568d3 0%, #65408a 100%);
-}
-
-.credit-btn {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
-.credit-btn:hover {
+.debit-btn:hover {
     background: linear-gradient(135deg, #e080e8 0%, #e04458 100%);
+}
+
+.credit-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.credit-btn:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #65408a 100%);
 }
 
 /* 수입/지출 입력 폼 (2열 레이아웃) */
