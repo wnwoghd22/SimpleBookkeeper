@@ -2,6 +2,9 @@
 let transactions = [];
 let editingId = null;
 
+// 추적 가능한 항목들 (UUID가 부여된 자산/부채)
+let trackedItems = [];
+
 // 계정 분류
 const accountTypes = {
     '현금': 'asset',
@@ -9,6 +12,7 @@ const accountTypes = {
     '식비': 'expense',
     '교통비': 'expense',
     '주거비': 'expense',
+    '공과금': 'expense',
     '통신비': 'expense',
     '의료비': 'expense',
     '문화생활비': 'expense',
@@ -16,8 +20,18 @@ const accountTypes = {
     '급여': 'income',
     '사업소득': 'income',
     '이자수입': 'income',
-    '기타수입': 'income'
+    '기타수입': 'income',
+    '부채': 'liability'
 };
+
+// UUID 생성 함수
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 // 로컬 스토리지에서 데이터 로드
 function loadFromLocalStorage() {
@@ -25,50 +39,374 @@ function loadFromLocalStorage() {
     if (stored) {
         transactions = JSON.parse(stored);
     }
+    const storedItems = localStorage.getItem('trackedItems');
+    if (storedItems) {
+        trackedItems = JSON.parse(storedItems);
+    }
 }
 
 // 로컬 스토리지에 데이터 저장
 function saveToLocalStorage() {
     localStorage.setItem('doubleEntryTransactions', JSON.stringify(transactions));
+    localStorage.setItem('trackedItems', JSON.stringify(trackedItems));
 }
 
 // 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    loadFromLocalStorage();
+    // 로컬 스토리지 데이터 삭제 (초기화)
+    localStorage.removeItem('doubleEntryTransactions');
+    localStorage.removeItem('trackedItems');
+    transactions = [];
+    trackedItems = [];
+
     renderTransactions();
     updateSummary();
     setupEventListeners();
-    
+
     // 오늘 날짜를 기본값으로 설정
     document.getElementById('date').valueAsDate = new Date();
 });
 
+// 선택된 항목 저장 변수
+let selectedAsset = null;
+let selectedExpenseAccount = null;
+let selectedPaymentMethod = null;
+let selectedLiabilityId = null;
+
 // 이벤트 리스너 설정
 function setupEventListeners() {
+    // 거래 유형 버튼 클릭 이벤트
+    document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            handleTypeSelection(type);
+        });
+    });
+
+    // 자산 버튼 클릭 이벤트
+    document.querySelectorAll('.asset-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // 모든 버튼의 선택 상태 해제
+            document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('selected'));
+            // 현재 버튼 선택
+            this.classList.add('selected');
+            selectedAsset = this.getAttribute('data-account');
+        });
+    });
+
+    // 수입 저장 버튼
+    document.getElementById('incomeSubmitBtn').addEventListener('click', handleIncomeSubmit);
+
+    // 수입 취소 버튼
+    document.getElementById('incomeCancelBtn').addEventListener('click', function() {
+        hideAllForms();
+        showTypeSelector();
+        resetIncomeForm();
+    });
+
+    // 지출 탭 전환
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tab = this.getAttribute('data-tab');
+
+            // 탭 버튼 활성화
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // 탭 콘텐츠 표시
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+
+            // 선택 초기화
+            selectedExpenseAccount = null;
+            selectedLiabilityId = null;
+            document.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.liability-item').forEach(b => b.classList.remove('selected'));
+        });
+    });
+
+    // 비용 계정 버튼 클릭
+    document.querySelectorAll('.account-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedExpenseAccount = this.getAttribute('data-account');
+            selectedLiabilityId = null;
+        });
+    });
+
+    // 지불 수단 버튼 클릭
+    document.querySelectorAll('.payment-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedPaymentMethod = this.getAttribute('data-account');
+        });
+    });
+
+    // 부채 추가 버튼
+    document.getElementById('addLiabilityBtn').addEventListener('click', addLiability);
+
+    // 지출 저장 버튼
+    document.getElementById('expenseSubmitBtn').addEventListener('click', handleExpenseSubmit);
+
+    // 지출 취소 버튼
+    document.getElementById('expenseCancelBtn').addEventListener('click', function() {
+        hideAllForms();
+        showTypeSelector();
+        resetExpenseForm();
+    });
+
     // 폼 제출
     document.getElementById('transactionForm').addEventListener('submit', handleSubmit);
-    
+
     // 취소 버튼
     document.getElementById('cancelBtn').addEventListener('click', resetForm);
-    
+
     // 엑셀 내보내기
     document.getElementById('exportBtn').addEventListener('click', exportToExcel);
-    
+
     // 엑셀 불러오기
     document.getElementById('importBtn').addEventListener('click', () => {
         document.getElementById('fileInput').click();
     });
-    
+
     document.getElementById('fileInput').addEventListener('change', importFromExcel);
-    
+
     // 필터 적용
     document.getElementById('applyFilter').addEventListener('click', applyFilter);
     document.getElementById('clearFilter').addEventListener('click', clearFilter);
-    
+
     // 금액 자동 동기화 (차변 입력 시 대변도 동일하게)
     document.getElementById('debitAmount').addEventListener('input', function(e) {
         document.getElementById('creditAmount').value = e.target.value;
     });
+}
+
+// 거래 유형 선택 처리
+function handleTypeSelection(type) {
+    hideAllForms();
+
+    if (type === 'income') {
+        document.querySelector('.income-form').style.display = 'block';
+    } else if (type === 'expense') {
+        document.querySelector('.expense-form').style.display = 'block';
+        renderLiabilityList();
+    }
+    // 다른 타입들은 나중에 구현
+}
+
+// 모든 폼 숨기기
+function hideAllForms() {
+    document.querySelector('.transaction-type-selector').style.display = 'none';
+    document.querySelector('.income-form').style.display = 'none';
+    document.querySelector('.expense-form').style.display = 'none';
+    document.querySelector('.transaction-form').style.display = 'none';
+}
+
+// 타입 선택 버튼 표시
+function showTypeSelector() {
+    document.querySelector('.transaction-type-selector').style.display = 'block';
+}
+
+// 수입 폼 초기화
+function resetIncomeForm() {
+    selectedAsset = null;
+    document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('incomeAmount').value = '';
+}
+
+// 수입 입력 처리
+function handleIncomeSubmit() {
+    const amount = parseFloat(document.getElementById('incomeAmount').value);
+
+    if (!selectedAsset) {
+        alert('자산을 선택해주세요.');
+        return;
+    }
+
+    if (!amount || amount <= 0) {
+        alert('금액을 입력해주세요.');
+        return;
+    }
+
+    // 복식부기 거래 생성
+    // 차변: 자산 (현금/은행예금) 증가
+    // 대변: 수입 (기타수입) 증가
+    const transaction = {
+        id: Date.now().toString(),
+        date: new Date().toISOString().split('T')[0],
+        description: '수입',
+        debitAccount: selectedAsset,
+        debitAmount: amount,
+        creditAccount: '기타수입',
+        creditAmount: amount
+    };
+
+    transactions.push(transaction);
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    saveToLocalStorage();
+    renderTransactions();
+    updateSummary();
+
+    // 폼 초기화 및 타입 선택 화면으로
+    hideAllForms();
+    showTypeSelector();
+    resetIncomeForm();
+
+    alert('수입이 등록되었습니다.');
+}
+
+// 지출 폼 초기화
+function resetExpenseForm() {
+    selectedExpenseAccount = null;
+    selectedPaymentMethod = null;
+    selectedLiabilityId = null;
+    document.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.liability-item').forEach(b => b.classList.remove('selected'));
+    document.getElementById('expenseAmount').value = '';
+
+    // 첫 번째 탭으로 리셋
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('expense-accounts').classList.add('active');
+}
+
+// 부채 추가
+function addLiability() {
+    const name = prompt('부채 이름을 입력하세요 (예: 신용카드 대금, 대출금):');
+    if (!name) return;
+
+    const amount = parseFloat(prompt('부채 금액을 입력하세요:'));
+    if (!amount || amount <= 0) {
+        alert('올바른 금액을 입력해주세요.');
+        return;
+    }
+
+    const liability = {
+        id: generateUUID(),
+        name: name,
+        originalAmount: amount,
+        currentAmount: amount,
+        createdAt: new Date().toISOString()
+    };
+
+    trackedItems.push(liability);
+    saveToLocalStorage();
+    renderLiabilityList();
+
+    alert('부채가 추가되었습니다.');
+}
+
+// 부채 목록 렌더링
+function renderLiabilityList() {
+    const listDiv = document.getElementById('liabilityList');
+
+    const liabilities = trackedItems.filter(item => item.currentAmount > 0);
+
+    if (liabilities.length === 0) {
+        listDiv.innerHTML = '<p class="empty-message">등록된 부채가 없습니다.</p>';
+        return;
+    }
+
+    listDiv.innerHTML = liabilities.map(liability => `
+        <div class="liability-item" data-id="${liability.id}">
+            <div class="liability-item-name">${liability.name}</div>
+            <div class="liability-item-amount">잔액: ${formatCurrency(liability.currentAmount)}</div>
+        </div>
+    `).join('');
+
+    // 부채 항목 클릭 이벤트
+    document.querySelectorAll('.liability-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.liability-item').forEach(i => i.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedLiabilityId = this.getAttribute('data-id');
+            selectedExpenseAccount = null;
+            document.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
+        });
+    });
+}
+
+// 지출 입력 처리
+function handleExpenseSubmit() {
+    const amount = parseFloat(document.getElementById('expenseAmount').value);
+
+    if (!selectedPaymentMethod) {
+        alert('지불 수단을 선택해주세요.');
+        return;
+    }
+
+    if (!amount || amount <= 0) {
+        alert('금액을 입력해주세요.');
+        return;
+    }
+
+    let transaction;
+
+    if (selectedExpenseAccount) {
+        // 비용 계정 지출
+        // 차변: 비용 계정 증가
+        // 대변: 자산 (현금/은행예금) 감소
+        transaction = {
+            id: Date.now().toString(),
+            date: new Date().toISOString().split('T')[0],
+            description: selectedExpenseAccount,
+            debitAccount: selectedExpenseAccount,
+            debitAmount: amount,
+            creditAccount: selectedPaymentMethod,
+            creditAmount: amount
+        };
+    } else if (selectedLiabilityId) {
+        // 부채 상환
+        const liability = trackedItems.find(item => item.id === selectedLiabilityId);
+
+        if (!liability) {
+            alert('부채를 찾을 수 없습니다.');
+            return;
+        }
+
+        if (amount > liability.currentAmount) {
+            alert(`상환 금액이 부채 잔액(${formatCurrency(liability.currentAmount)})보다 큽니다.`);
+            return;
+        }
+
+        // 차변: 부채 감소
+        // 대변: 자산 (현금/은행예금) 감소
+        transaction = {
+            id: Date.now().toString(),
+            date: new Date().toISOString().split('T')[0],
+            description: `${liability.name} 상환`,
+            debitAccount: '부채',
+            debitAmount: amount,
+            creditAccount: selectedPaymentMethod,
+            creditAmount: amount,
+            trackedItemId: liability.id
+        };
+
+        // 부채 잔액 업데이트
+        liability.currentAmount -= amount;
+    } else {
+        alert('지출 항목을 선택해주세요.');
+        return;
+    }
+
+    transactions.push(transaction);
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    saveToLocalStorage();
+    renderTransactions();
+    updateSummary();
+
+    // 폼 초기화 및 타입 선택 화면으로
+    hideAllForms();
+    showTypeSelector();
+    resetExpenseForm();
+
+    alert('지출이 등록되었습니다.');
 }
 
 // 거래 제출 처리

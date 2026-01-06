@@ -53,6 +53,261 @@ h2 {
     border-bottom: 2px solid #3498db;
 }
 
+/* 거래 유형 선택 버튼 그리드 */
+.transaction-type-selector {
+    text-align: center;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.type-btn {
+    padding: 40px 20px;
+    font-size: 24px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.type-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.type-btn:active {
+    transform: translateY(0);
+}
+
+.debit-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.debit-btn:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #65408a 100%);
+}
+
+.credit-btn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.credit-btn:hover {
+    background: linear-gradient(135deg, #e080e8 0%, #e04458 100%);
+}
+
+/* 수입/지출 입력 폼 (2열 레이아웃) */
+.income-form, .expense-form {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.two-column-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.form-column {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.form-column h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.asset-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.asset-btn {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.asset-btn:hover {
+    border-color: #3498db;
+    background: #e3f2fd;
+    transform: translateX(5px);
+}
+
+.asset-btn.selected {
+    border-color: #3498db;
+    background: #3498db;
+    color: white;
+}
+
+.amount-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.amount-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.submit-btn, .cancel-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* 지출 입력 폼 추가 스타일 */
+.expense-type-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.tab-btn:hover {
+    border-color: #3498db;
+}
+
+.tab-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.account-buttons, .payment-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.account-btn, .payment-btn {
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.account-btn:hover, .payment-btn:hover {
+    border-color: #3498db;
+    background: #e3f2fd;
+    transform: translateX(5px);
+}
+
+.account-btn.selected, .payment-btn.selected {
+    border-color: #3498db;
+    background: #3498db;
+    color: white;
+}
+
+.liability-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.liability-item {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+}
+
+.liability-item:hover {
+    border-color: #e74c3c;
+    background: #fef5f5;
+}
+
+.liability-item.selected {
+    border-color: #e74c3c;
+    background: #e74c3c;
+    color: white;
+}
+
+.liability-item-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.liability-item-amount {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+
+.add-btn {
+    width: 100%;
+    padding: 12px;
+}
+
+.payment-section, .amount-section {
+    margin-bottom: 20px;
+}
+
+.payment-section label, .amount-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #555;
+}
+
 /* 폼 스타일 */
 .form-row {
     display: grid;
