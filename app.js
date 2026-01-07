@@ -350,6 +350,29 @@ function setupEventListeners() {
     document.getElementById('debitAmount').addEventListener('input', function (e) {
         document.getElementById('creditAmount').value = e.target.value;
     });
+
+    // 메인 탭 전환
+    document.querySelectorAll('.main-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const tabId = this.getAttribute('data-tab');
+            switchMainTab(this, tabId);
+        });
+    });
+}
+
+// 메인 탭 전환 함수
+function switchMainTab(clickedBtn, tabId) {
+    // 버튼 활성화 상태 업데이트
+    document.querySelectorAll('.main-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    clickedBtn.classList.add('active');
+
+    // 탭 콘텐츠 표시 전환
+    document.querySelectorAll('.main-tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(tabId).classList.add('active');
 }
 
 // 거래 유형 선택 처리

@@ -55,6 +55,49 @@ h2 {
 
 /* ==================== 애니메이션 효과 추가 ==================== */
 
+/* 메인 네비게이션 */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.main-tab-btn {
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.main-tab-btn:hover {
+    background: #f0f0f0;
+    border-color: #bbb;
+}
+
+.main-tab-btn.active {
+    background: #2c3e50;
+    color: white;
+    border-color: #2c3e50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 메인 탭 콘텐츠 */
+.main-tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.main-tab-content.active {
+    display: block;
+}
+
 /* 거래 전체 래퍼 */
 .transaction-wrapper {
     position: relative;
