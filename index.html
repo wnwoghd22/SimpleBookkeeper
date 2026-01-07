@@ -20,319 +20,328 @@
         </header>
 
         <main>
-            <!-- 거래 유형 선택 버튼 -->
-            <section class="transaction-type-selector">
-                <h2>거래 유형 선택</h2>
-                <div class="button-grid">
-                    <button class="type-btn debit-btn" data-type="expense">지출</button>
-                    <button class="type-btn credit-btn" data-type="income">수입</button>
+            <!-- 거래 전체 래퍼 -->
+            <div class="transaction-wrapper">
+                <!-- 거래 유형 선택 버튼 -->
+                <section class="transaction-type-selector">
+                    <h2>거래 유형 선택</h2>
+                    <div class="button-grid">
+                        <button class="type-btn debit-btn" data-type="expense">지출</button>
+                        <button class="type-btn credit-btn" data-type="income">수입</button>
 
-                    <button class="type-btn debit-btn" data-type="purchase">구입</button>
-                    <button class="type-btn credit-btn" data-type="sale">판매</button>
+                        <button class="type-btn debit-btn" data-type="purchase">구입</button>
+                        <button class="type-btn credit-btn" data-type="sale">판매</button>
 
-                    <button class="type-btn debit-btn" data-type="investment">투자</button>
-                    <button class="type-btn credit-btn" data-type="collection">회수</button>
-                </div>
-            </section>
+                        <button class="type-btn debit-btn" data-type="investment">투자</button>
+                        <button class="type-btn credit-btn" data-type="collection">회수</button>
+                    </div>
+                </section>
 
-            <!-- 수입 입력 폼 -->
-            <section class="income-form" style="display: none;">
-                <h2>수입 입력</h2>
-                <div class="two-column-form">
-                    <div class="form-column">
-                        <h3>자산 선택</h3>
-                        <div class="asset-buttons">
-                            <button class="asset-btn" data-account="현금">현금</button>
-                            <button class="asset-btn" data-account="은행예금">은행예금</button>
+                <!-- 수입 입력 폼 -->
+                <section class="income-form" style="display: none;">
+                    <h2>수입 입력</h2>
+                    <div class="two-column-form">
+                        <div class="form-column">
+                            <h3>자산 선택</h3>
+                            <div class="asset-buttons">
+                                <button class="asset-btn" data-account="현금">현금</button>
+                                <button class="asset-btn" data-account="은행예금">은행예금</button>
+                            </div>
+                        </div>
+                        <div class="form-column">
+                            <h3>수입 금액</h3>
+                            <input type="number" id="incomeAmount" class="amount-input" placeholder="금액 입력" min="0">
                         </div>
                     </div>
-                    <div class="form-column">
-                        <h3>수입 금액</h3>
-                        <input type="number" id="incomeAmount" class="amount-input" placeholder="금액 입력" min="0">
+                    <div class="form-actions-bottom">
+                        <button id="incomeSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                        <button id="incomeCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                     </div>
-                </div>
-                <div class="form-actions-bottom">
-                    <button id="incomeSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                    <button id="incomeCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
-                </div>
-            </section>
+                </section>
 
-            <!-- 지출 입력 폼 -->
-            <section class="expense-form" style="display: none;">
-                <h2>지출 입력</h2>
-                <div class="two-column-form">
-                    <div class="form-column">
-                        <h3>지출 항목</h3>
-                        <div class="expense-type-selector">
-                            <button class="tab-btn active" data-tab="expense-accounts">비용 계정</button>
-                            <button class="tab-btn" data-tab="liability-accounts">부채 상환</button>
-                        </div>
-                        <div id="expense-accounts" class="tab-content active">
-                            <div class="account-buttons">
-                                <button class="account-btn" data-account="식비" data-tracked="false">식비</button>
-                                <button class="account-btn" data-account="교통비" data-tracked="false">교통비</button>
-                                <button class="account-btn" data-account="공과금" data-tracked="false">공과금</button>
-                                <button class="account-btn" data-account="통신비" data-tracked="false">통신비</button>
-                                <button class="account-btn" data-account="의료비" data-tracked="false">의료비</button>
-                                <button class="account-btn" data-account="문화생활비" data-tracked="false">문화생활비</button>
+                <!-- 지출 입력 폼 -->
+                <section class="expense-form" style="display: none;">
+                    <h2>지출 입력</h2>
+                    <div class="two-column-form">
+                        <div class="form-column">
+                            <h3>지출 항목</h3>
+                            <div class="expense-type-selector">
+                                <button class="tab-btn active" data-tab="expense-accounts">비용 계정</button>
+                                <button class="tab-btn" data-tab="liability-accounts">부채 상환</button>
+                            </div>
+                            <div id="expense-accounts" class="tab-content active">
+                                <div class="account-buttons">
+                                    <button class="account-btn" data-account="식비" data-tracked="false">식비</button>
+                                    <button class="account-btn" data-account="교통비" data-tracked="false">교통비</button>
+                                    <button class="account-btn" data-account="공과금" data-tracked="false">공과금</button>
+                                    <button class="account-btn" data-account="통신비" data-tracked="false">통신비</button>
+                                    <button class="account-btn" data-account="의료비" data-tracked="false">의료비</button>
+                                    <button class="account-btn" data-account="문화생활비" data-tracked="false">문화생활비</button>
+                                </div>
+                            </div>
+                            <div id="liability-accounts" class="tab-content">
+                                <div id="liabilityList" class="liability-list">
+                                    <p class="empty-message">등록된 부채가 없습니다.</p>
+                                </div>
+                                <button id="addLiabilityBtn" class="btn btn-primary add-btn">부채 추가</button>
                             </div>
                         </div>
-                        <div id="liability-accounts" class="tab-content">
-                            <div id="liabilityList" class="liability-list">
-                                <p class="empty-message">등록된 부채가 없습니다.</p>
+                        <div class="form-column">
+                            <h3>지불 수단 및 금액</h3>
+                            <div class="payment-section">
+                                <label>지불 수단</label>
+                                <div class="payment-buttons">
+                                    <button class="payment-btn" data-account="현금">현금</button>
+                                    <button class="payment-btn" data-account="은행예금">은행예금</button>
+                                </div>
                             </div>
-                            <button id="addLiabilityBtn" class="btn btn-primary add-btn">부채 추가</button>
-                        </div>
-                    </div>
-                    <div class="form-column">
-                        <h3>지불 수단 및 금액</h3>
-                        <div class="payment-section">
-                            <label>지불 수단</label>
-                            <div class="payment-buttons">
-                                <button class="payment-btn" data-account="현금">현금</button>
-                                <button class="payment-btn" data-account="은행예금">은행예금</button>
-                            </div>
-                        </div>
-                        <div class="amount-section">
-                            <label>지출 금액</label>
-                            <input type="number" id="expenseAmount" class="amount-input" placeholder="금액 입력" min="0">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-actions-bottom">
-                    <button id="expenseSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                    <button id="expenseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
-                </div>
-            </section>
-
-            <!-- 구입 입력 폼 -->
-            <section class="purchase-form" style="display: none;">
-                <h2>구입 입력</h2>
-                <div class="two-column-form">
-                    <div class="form-column">
-                        <h3>구입 항목</h3>
-                        <div class="purchase-type-selector">
-                            <button class="tab-btn active" data-tab="immediate-expense">즉시 비용</button>
-                            <button class="tab-btn" data-tab="depreciable-asset">상각 자산</button>
-                            <button class="tab-btn" data-tab="inventory">재고</button>
-                        </div>
-                        <div id="immediate-expense" class="tab-content active">
-                            <div class="purchase-input-section">
-                                <label>항목명</label>
-                                <input type="text" id="immediateExpenseName" class="text-input" placeholder="예: 사무용품">
-                                <label>금액</label>
-                                <input type="number" id="immediateExpenseAmount" class="amount-input"
-                                    placeholder="금액 입력" min="0">
-                            </div>
-                        </div>
-                        <div id="depreciable-asset" class="tab-content">
-                            <div class="purchase-input-section">
-                                <label>자산명</label>
-                                <input type="text" id="assetName" class="text-input" placeholder="예: 자동차, 노트북">
-                                <label>금액</label>
-                                <input type="number" id="assetAmount" class="amount-input" placeholder="금액 입력" min="0">
-                            </div>
-                        </div>
-                        <div id="inventory" class="tab-content">
-                            <div class="purchase-input-section">
-                                <label>재고명</label>
-                                <input type="text" id="inventoryName" class="text-input" placeholder="예: 상품명">
-                                <label>수량</label>
-                                <input type="number" id="inventoryQuantity" class="text-input" placeholder="수량" min="1"
-                                    value="1">
-                                <label>단가</label>
-                                <input type="number" id="inventoryPrice" class="amount-input" placeholder="단가 입력"
+                            <div class="amount-section">
+                                <label>지출 금액</label>
+                                <input type="number" id="expenseAmount" class="amount-input" placeholder="금액 입력"
                                     min="0">
                             </div>
                         </div>
                     </div>
-                    <div class="form-column">
-                        <h3>지불 방식</h3>
-                        <div class="payment-mode-selector">
-                            <button class="mode-btn active" data-mode="single">단일 지불</button>
-                            <button class="mode-btn" data-mode="split">복합 지불</button>
-                        </div>
-                        <div id="single-payment" class="payment-mode-content active">
-                            <label>지불 수단</label>
-                            <div class="payment-buttons">
-                                <button class="payment-method-btn" data-method="현금">현금</button>
-                                <button class="payment-method-btn" data-method="은행예금">은행예금</button>
-                                <button class="payment-method-btn" data-method="할부">할부</button>
+                    <div class="form-actions-bottom">
+                        <button id="expenseSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                        <button id="expenseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
+                    </div>
+                </section>
+
+                <!-- 구입 입력 폼 -->
+                <section class="purchase-form" style="display: none;">
+                    <h2>구입 입력</h2>
+                    <div class="two-column-form">
+                        <div class="form-column">
+                            <h3>구입 항목</h3>
+                            <div class="purchase-type-selector">
+                                <button class="tab-btn active" data-tab="immediate-expense">즉시 비용</button>
+                                <button class="tab-btn" data-tab="depreciable-asset">상각 자산</button>
+                                <button class="tab-btn" data-tab="inventory">재고</button>
                             </div>
-                        </div>
-                        <div class="payment-mode-content" id="split-payment">
-                            <div class="split-payment-section">
-                                <label>현금/예금 지불</label>
-                                <div class="split-payment-row">
-                                    <select id="splitCashMethod" class="split-select">
-                                        <option value="현금">현금</option>
-                                        <option value="은행예금">은행예금</option>
-                                    </select>
-                                    <input type="number" id="splitCashAmount" class="split-input" placeholder="금액"
+                            <div id="immediate-expense" class="tab-content active">
+                                <div class="purchase-input-section">
+                                    <label>항목명</label>
+                                    <input type="text" id="immediateExpenseName" class="text-input"
+                                        placeholder="예: 사무용품">
+                                    <label>금액</label>
+                                    <input type="number" id="immediateExpenseAmount" class="amount-input"
+                                        placeholder="금액 입력" min="0">
+                                </div>
+                            </div>
+                            <div id="depreciable-asset" class="tab-content">
+                                <div class="purchase-input-section">
+                                    <label>자산명</label>
+                                    <input type="text" id="assetName" class="text-input" placeholder="예: 자동차, 노트북">
+                                    <label>금액</label>
+                                    <input type="number" id="assetAmount" class="amount-input" placeholder="금액 입력"
                                         min="0">
                                 </div>
-                                <label>할부 금액</label>
-                                <input type="number" id="splitInstallmentAmount" class="split-input" placeholder="할부 금액"
-                                    min="0">
-                                <div class="total-display">
-                                    <span>총 금액: </span>
-                                    <span id="splitTotalAmount">0원</span>
+                            </div>
+                            <div id="inventory" class="tab-content">
+                                <div class="purchase-input-section">
+                                    <label>재고명</label>
+                                    <input type="text" id="inventoryName" class="text-input" placeholder="예: 상품명">
+                                    <label>수량</label>
+                                    <input type="number" id="inventoryQuantity" class="text-input" placeholder="수량"
+                                        min="1" value="1">
+                                    <label>단가</label>
+                                    <input type="number" id="inventoryPrice" class="amount-input" placeholder="단가 입력"
+                                        min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-column">
+                            <h3>지불 방식</h3>
+                            <div class="payment-mode-selector">
+                                <button class="mode-btn active" data-mode="single">단일 지불</button>
+                                <button class="mode-btn" data-mode="split">복합 지불</button>
+                            </div>
+                            <div id="single-payment" class="payment-mode-content active">
+                                <label>지불 수단</label>
+                                <div class="payment-buttons">
+                                    <button class="payment-method-btn" data-method="현금">현금</button>
+                                    <button class="payment-method-btn" data-method="은행예금">은행예금</button>
+                                    <button class="payment-method-btn" data-method="할부">할부</button>
+                                </div>
+                            </div>
+                            <div class="payment-mode-content" id="split-payment">
+                                <div class="split-payment-section">
+                                    <label>현금/예금 지불</label>
+                                    <div class="split-payment-row">
+                                        <select id="splitCashMethod" class="split-select">
+                                            <option value="현금">현금</option>
+                                            <option value="은행예금">은행예금</option>
+                                        </select>
+                                        <input type="number" id="splitCashAmount" class="split-input" placeholder="금액"
+                                            min="0">
+                                    </div>
+                                    <label>할부 금액</label>
+                                    <input type="number" id="splitInstallmentAmount" class="split-input"
+                                        placeholder="할부 금액" min="0">
+                                    <div class="total-display">
+                                        <span>총 금액: </span>
+                                        <span id="splitTotalAmount">0원</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-actions-bottom">
-                    <button id="purchaseSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                    <button id="purchaseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
-                </div>
-            </section>
+                    <div class="form-actions-bottom">
+                        <button id="purchaseSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                        <button id="purchaseCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
+                    </div>
+                </section>
 
-            <!-- 판매 입력 폼 -->
-            <section class="sale-form" style="display: none;">
-                <h2>판매 입력</h2>
-                <div class="two-column-form">
-                    <div class="form-column">
-                        <h3>수입 방법</h3>
-                        <div class="receive-section">
-                            <label>받을 방법</label>
-                            <div class="receive-buttons">
-                                <button class="receive-btn" data-method="현금">현금</button>
-                                <button class="receive-btn" data-method="은행예금">은행예금</button>
+                <!-- 판매 입력 폼 -->
+                <section class="sale-form" style="display: none;">
+                    <h2>판매 입력</h2>
+                    <div class="two-column-form">
+                        <div class="form-column">
+                            <h3>수입 방법</h3>
+                            <div class="receive-section">
+                                <label>받을 방법</label>
+                                <div class="receive-buttons">
+                                    <button class="receive-btn" data-method="현금">현금</button>
+                                    <button class="receive-btn" data-method="은행예금">은행예금</button>
+                                </div>
+                            </div>
+                            <div class="amount-section">
+                                <label>판매 금액</label>
+                                <input type="number" id="saleAmount" class="amount-input" placeholder="금액 입력" min="0">
                             </div>
                         </div>
-                        <div class="amount-section">
-                            <label>판매 금액</label>
-                            <input type="number" id="saleAmount" class="amount-input" placeholder="금액 입력" min="0">
+                        <div class="form-column">
+                            <h3>판매 항목</h3>
+                            <div class="sale-type-selector">
+                                <button class="tab-btn active" data-tab="sell-asset">상각 자산</button>
+                                <button class="tab-btn" data-tab="sell-inventory">재고</button>
+                                <button class="tab-btn" data-tab="sell-other">기타 중고거래</button>
+                            </div>
+                            <div id="sell-asset" class="tab-content active">
+                                <div id="assetSaleList" class="sale-item-list">
+                                    <p class="empty-message">등록된 상각 자산이 없습니다.</p>
+                                </div>
+                            </div>
+                            <div id="sell-inventory" class="tab-content">
+                                <div id="inventorySaleList" class="sale-item-list">
+                                    <p class="empty-message">등록된 재고가 없습니다.</p>
+                                </div>
+                            </div>
+                            <div id="sell-other" class="tab-content">
+                                <div class="sale-input-section">
+                                    <label>품목명</label>
+                                    <input type="text" id="otherSaleItemName" class="text-input"
+                                        placeholder="예: 중고 자전거, 책상">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-column">
-                        <h3>판매 항목</h3>
-                        <div class="sale-type-selector">
-                            <button class="tab-btn active" data-tab="sell-asset">상각 자산</button>
-                            <button class="tab-btn" data-tab="sell-inventory">재고</button>
-                            <button class="tab-btn" data-tab="sell-other">기타 중고거래</button>
-                        </div>
-                        <div id="sell-asset" class="tab-content active">
-                            <div id="assetSaleList" class="sale-item-list">
-                                <p class="empty-message">등록된 상각 자산이 없습니다.</p>
+                    <div class="form-actions-bottom">
+                        <button id="saleSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                        <button id="saleCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
+                    </div>
+                </section>
+
+                <!-- 투자 입력 폼 -->
+                <section class="investment-form" style="display: none;">
+                    <h2>투자 입력</h2>
+                    <div class="two-column-form">
+                        <div class="form-column">
+                            <h3>투자 항목</h3>
+                            <div class="investment-type-selector">
+                                <button class="tab-btn active" data-tab="financial-product">금융상품</button>
+                                <button class="tab-btn" data-tab="long-deposit">장기 예적금</button>
+                                <button class="tab-btn" data-tab="deposit">전월세 보증금</button>
+                            </div>
+                            <div id="financial-product" class="tab-content active">
+                                <div class="investment-input-section">
+                                    <label>상품명</label>
+                                    <input type="text" id="financialProductName" class="text-input"
+                                        placeholder="예: 삼성전자 주식, 국채">
+                                    <label>투자 금액</label>
+                                    <input type="number" id="financialProductAmount" class="amount-input"
+                                        placeholder="금액 입력" min="0">
+                                </div>
+                            </div>
+                            <div id="long-deposit" class="tab-content">
+                                <div class="investment-input-section">
+                                    <label>예적금명</label>
+                                    <input type="text" id="longDepositName" class="text-input"
+                                        placeholder="예: 정기예금, 청약저축">
+                                    <label>금액</label>
+                                    <input type="number" id="longDepositAmount" class="amount-input" placeholder="금액 입력"
+                                        min="0">
+                                </div>
+                            </div>
+                            <div id="deposit" class="tab-content">
+                                <div class="investment-input-section">
+                                    <label>보증금 항목</label>
+                                    <input type="text" id="depositName" class="text-input"
+                                        placeholder="예: 아파트 전세금, 원룸 보증금">
+                                    <label>금액</label>
+                                    <input type="number" id="depositAmount" class="amount-input" placeholder="금액 입력"
+                                        min="0">
+                                </div>
                             </div>
                         </div>
-                        <div id="sell-inventory" class="tab-content">
-                            <div id="inventorySaleList" class="sale-item-list">
-                                <p class="empty-message">등록된 재고가 없습니다.</p>
-                            </div>
-                        </div>
-                        <div id="sell-other" class="tab-content">
-                            <div class="sale-input-section">
-                                <label>품목명</label>
-                                <input type="text" id="otherSaleItemName" class="text-input"
-                                    placeholder="예: 중고 자전거, 책상">
+                        <div class="form-column">
+                            <h3>지불 방법</h3>
+                            <div class="payment-section">
+                                <label>지불 수단</label>
+                                <div class="payment-buttons">
+                                    <button class="invest-payment-btn" data-method="현금">현금</button>
+                                    <button class="invest-payment-btn" data-method="은행예금">은행예금</button>
+                                    <button class="invest-payment-btn" data-method="부채">부채(대출)</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-actions-bottom">
-                    <button id="saleSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                    <button id="saleCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
-                </div>
-            </section>
+                    <div class="form-actions-bottom">
+                        <button id="investmentSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                        <button id="investmentCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
+                    </div>
+                </section>
 
-            <!-- 투자 입력 폼 -->
-            <section class="investment-form" style="display: none;">
-                <h2>투자 입력</h2>
-                <div class="two-column-form">
-                    <div class="form-column">
-                        <h3>투자 항목</h3>
-                        <div class="investment-type-selector">
-                            <button class="tab-btn active" data-tab="financial-product">금융상품</button>
-                            <button class="tab-btn" data-tab="long-deposit">장기 예적금</button>
-                            <button class="tab-btn" data-tab="deposit">전월세 보증금</button>
-                        </div>
-                        <div id="financial-product" class="tab-content active">
-                            <div class="investment-input-section">
-                                <label>상품명</label>
-                                <input type="text" id="financialProductName" class="text-input"
-                                    placeholder="예: 삼성전자 주식, 국채">
-                                <label>투자 금액</label>
-                                <input type="number" id="financialProductAmount" class="amount-input"
-                                    placeholder="금액 입력" min="0">
+                <!-- 회수 입력 폼 -->
+                <section class="collection-form" style="display: none;">
+                    <h2>회수 입력</h2>
+                    <div class="two-column-form">
+                        <div class="form-column">
+                            <h3>받을 방법 및 금액</h3>
+                            <div class="receive-section">
+                                <label>받을 방법</label>
+                                <div class="receive-buttons">
+                                    <button class="collect-receive-btn" data-method="현금">현금</button>
+                                    <button class="collect-receive-btn" data-method="은행예금">은행예금</button>
+                                    <button class="collect-receive-btn" data-method="부채상환">부채 상환</button>
+                                </div>
                             </div>
-                        </div>
-                        <div id="long-deposit" class="tab-content">
-                            <div class="investment-input-section">
-                                <label>예적금명</label>
-                                <input type="text" id="longDepositName" class="text-input" placeholder="예: 정기예금, 청약저축">
-                                <label>금액</label>
-                                <input type="number" id="longDepositAmount" class="amount-input" placeholder="금액 입력"
+                            <div class="amount-section">
+                                <label>회수 금액</label>
+                                <input type="number" id="collectionAmount" class="amount-input" placeholder="금액 입력"
                                     min="0">
                             </div>
+                            <div id="liabilityCollectionSection" style="display: none;">
+                                <label>상환할 부채 선택</label>
+                                <div id="liabilityCollectionList" class="liability-list">
+                                    <p class="empty-message">등록된 부채가 없습니다.</p>
+                                </div>
+                            </div>
                         </div>
-                        <div id="deposit" class="tab-content">
-                            <div class="investment-input-section">
-                                <label>보증금 항목</label>
-                                <input type="text" id="depositName" class="text-input" placeholder="예: 아파트 전세금, 원룸 보증금">
-                                <label>금액</label>
-                                <input type="number" id="depositAmount" class="amount-input" placeholder="금액 입력"
-                                    min="0">
+                        <div class="form-column">
+                            <h3>회수할 투자 항목</h3>
+                            <div id="investmentCollectionList" class="sale-item-list">
+                                <p class="empty-message">등록된 투자 항목이 없습니다.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="form-column">
-                        <h3>지불 방법</h3>
-                        <div class="payment-section">
-                            <label>지불 수단</label>
-                            <div class="payment-buttons">
-                                <button class="invest-payment-btn" data-method="현금">현금</button>
-                                <button class="invest-payment-btn" data-method="은행예금">은행예금</button>
-                                <button class="invest-payment-btn" data-method="부채">부채(대출)</button>
-                            </div>
-                        </div>
+                    <div class="form-actions-bottom">
+                        <button id="collectionSubmitBtn" class="btn btn-success submit-btn">저장</button>
+                        <button id="collectionCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
                     </div>
-                </div>
-                <div class="form-actions-bottom">
-                    <button id="investmentSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                    <button id="investmentCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
-                </div>
-            </section>
-
-            <!-- 회수 입력 폼 -->
-            <section class="collection-form" style="display: none;">
-                <h2>회수 입력</h2>
-                <div class="two-column-form">
-                    <div class="form-column">
-                        <h3>받을 방법 및 금액</h3>
-                        <div class="receive-section">
-                            <label>받을 방법</label>
-                            <div class="receive-buttons">
-                                <button class="collect-receive-btn" data-method="현금">현금</button>
-                                <button class="collect-receive-btn" data-method="은행예금">은행예금</button>
-                                <button class="collect-receive-btn" data-method="부채상환">부채 상환</button>
-                            </div>
-                        </div>
-                        <div class="amount-section">
-                            <label>회수 금액</label>
-                            <input type="number" id="collectionAmount" class="amount-input" placeholder="금액 입력" min="0">
-                        </div>
-                        <div id="liabilityCollectionSection" style="display: none;">
-                            <label>상환할 부채 선택</label>
-                            <div id="liabilityCollectionList" class="liability-list">
-                                <p class="empty-message">등록된 부채가 없습니다.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-column">
-                        <h3>회수할 투자 항목</h3>
-                        <div id="investmentCollectionList" class="sale-item-list">
-                            <p class="empty-message">등록된 투자 항목이 없습니다.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-actions-bottom">
-                    <button id="collectionSubmitBtn" class="btn btn-success submit-btn">저장</button>
-                    <button id="collectionCancelBtn" class="btn btn-secondary cancel-btn">취소</button>
-                </div>
-            </section>
+                </section>
+            </div>
 
             <!-- 거래 입력 폼 (초기에는 숨김) -->
             <section class="transaction-form" style="display: none;">

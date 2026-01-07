@@ -21,7 +21,7 @@ header {
     background: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
@@ -42,7 +42,7 @@ section {
     background: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
@@ -53,11 +53,30 @@ h2 {
     border-bottom: 2px solid #3498db;
 }
 
-/* 거래 유형 선택 버튼 그리드 */
-.transaction-type-selector {
-    text-align: center;
+/* ==================== 애니메이션 효과 추가 ==================== */
+
+/* 거래 전체 래퍼 */
+.transaction-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    margin-bottom: 20px;
 }
 
+/* 거래 유형 선택 섹션 */
+.transaction-type-selector {
+    text-align: center;
+    width: 100%;
+    transition: opacity 0.4s ease;
+    opacity: 1;
+}
+
+.transaction-type-selector.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 버튼 그리드 */
 .button-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -67,6 +86,7 @@ h2 {
     padding: 20px 0;
 }
 
+/* 버튼 기본 스타일 */
 .type-btn {
     padding: 40px 20px;
     font-size: 24px;
@@ -74,19 +94,57 @@ h2 {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
     color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .type-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .type-btn:active {
     transform: translateY(0);
 }
+
+/* 폼 공통 스타일 */
+.income-form,
+.expense-form,
+.purchase-form,
+.sale-form,
+.investment-form,
+.collection-form {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.income-form.show,
+.expense-form.show,
+.purchase-form.show,
+.sale-form.show,
+.investment-form.show,
+.collection-form.show {
+    opacity: 1;
+}
+
+
+
+/* 폼 fade-out 애니메이션 */
+.income-form.hide,
+.expense-form.hide,
+.purchase-form.hide,
+.sale-form.hide,
+.investment-form.hide,
+.collection-form.hide {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+/* ==================== 기존 스타일 유지 ==================== */
 
 .debit-btn {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -105,9 +163,15 @@ h2 {
 }
 
 /* 수입/지출/구입/판매/투자/회수 입력 폼 (2열 레이아웃) */
-.income-form, .expense-form, .purchase-form, .sale-form, .investment-form, .collection-form {
+.income-form,
+.expense-form,
+.purchase-form,
+.sale-form,
+.investment-form,
+.collection-form {
     max-width: 900px;
     margin: 0 auto;
+    /* margin-top: 100px;  - Removed in favor of absolute positioning within wrapper */
 }
 
 .two-column-form {
@@ -176,7 +240,8 @@ h2 {
     border-color: #3498db;
 }
 
-.submit-btn, .cancel-btn {
+.submit-btn,
+.cancel-btn {
     width: 100%;
     padding: 15px;
     font-size: 16px;
@@ -184,7 +249,10 @@ h2 {
 }
 
 /* 지출/구입/판매/투자 입력 폼 추가 스타일 */
-.expense-type-selector, .purchase-type-selector, .sale-type-selector, .investment-type-selector {
+.expense-type-selector,
+.purchase-type-selector,
+.sale-type-selector,
+.investment-type-selector {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
@@ -219,13 +287,15 @@ h2 {
     display: block;
 }
 
-.account-buttons, .payment-buttons {
+.account-buttons,
+.payment-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.account-btn, .payment-btn {
+.account-btn,
+.payment-btn {
     padding: 15px;
     font-size: 16px;
     font-weight: 600;
@@ -237,13 +307,15 @@ h2 {
     transition: all 0.3s;
 }
 
-.account-btn:hover, .payment-btn:hover {
+.account-btn:hover,
+.payment-btn:hover {
     border-color: #3498db;
     background: #e3f2fd;
     transform: translateX(5px);
 }
 
-.account-btn.selected, .payment-btn.selected {
+.account-btn.selected,
+.payment-btn.selected {
     border-color: #3498db;
     background: #3498db;
     color: white;
@@ -297,11 +369,13 @@ h2 {
     padding: 12px;
 }
 
-.payment-section, .amount-section {
+.payment-section,
+.amount-section {
     margin-bottom: 20px;
 }
 
-.payment-section label, .amount-section label {
+.payment-section label,
+.amount-section label {
     display: block;
     font-weight: 600;
     margin-bottom: 10px;
@@ -557,7 +631,8 @@ h2 {
 }
 
 /* 투자/회수 입력 폼 추가 스타일 */
-.invest-payment-btn, .collect-receive-btn {
+.invest-payment-btn,
+.collect-receive-btn {
     padding: 15px;
     font-size: 16px;
     font-weight: 600;
@@ -571,7 +646,8 @@ h2 {
     width: 100%;
 }
 
-.invest-payment-btn:hover, .collect-receive-btn:hover {
+.invest-payment-btn:hover,
+.collect-receive-btn:hover {
     border-color: #3498db;
     background: #e3f2fd;
 }
@@ -732,7 +808,8 @@ thead {
     color: white;
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -798,23 +875,47 @@ tbody tr:hover {
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
+    .button-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .two-column-form {
+        grid-template-columns: 1fr;
+    }
+
     header {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .actions {
         width: 100%;
         justify-content: center;
     }
-    
+
     table {
         font-size: 12px;
     }
-    
-    th, td {
+
+    th,
+    td {
         padding: 8px;
+    }
+
+    /* 모바일에서 제목 버튼 위치 조정 */
+    .type-btn.title-mode {
+        top: 60px;
+        padding: 12px 30px;
+        font-size: 18px;
+    }
+
+    @keyframes moveToTitle {
+        100% {
+            top: 60px;
+            padding: 12px 30px;
+            font-size: 18px;
+        }
     }
 }
 
@@ -824,12 +925,15 @@ tbody tr:hover {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.transaction-form, .transaction-list, .summary {
+.transaction-form,
+.transaction-list,
+.summary {
     animation: fadeIn 0.5s ease-out;
 }

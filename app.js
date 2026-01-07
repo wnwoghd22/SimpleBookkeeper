@@ -5,6 +5,10 @@ let editingId = null;
 // 추적 가능한 항목들 (UUID가 부여된 자산/부채)
 let trackedItems = [];
 
+// Animation state
+let currentSelectedButton = null;
+let currentTransactionType = null;
+
 // 계정 분류
 const accountTypes = {
     '현금': 'asset',
@@ -31,7 +35,7 @@ const accountTypes = {
 
 // UUID 생성 함수
 function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = Math.random() * 16 | 0;
         const v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
@@ -57,7 +61,7 @@ function saveToLocalStorage() {
 }
 
 // 초기화
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // 로컬 스토리지 데이터 삭제 (초기화)
     localStorage.removeItem('doubleEntryTransactions');
     localStorage.removeItem('trackedItems');
@@ -93,15 +97,15 @@ let selectedCollectionLiabilityId = null;
 function setupEventListeners() {
     // 거래 유형 버튼 클릭 이벤트
     document.querySelectorAll('.type-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const type = this.getAttribute('data-type');
-            handleTypeSelection(type);
+            handleTypeSelectionWithAnimation(this, type);
         });
     });
 
     // 자산 버튼 클릭 이벤트
     document.querySelectorAll('.asset-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             // 모든 버튼의 선택 상태 해제
             document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('selected'));
             // 현재 버튼 선택
@@ -114,15 +118,14 @@ function setupEventListeners() {
     document.getElementById('incomeSubmitBtn').addEventListener('click', handleIncomeSubmit);
 
     // 수입 취소 버튼
-    document.getElementById('incomeCancelBtn').addEventListener('click', function() {
-        hideAllForms();
-        showTypeSelector();
+    document.getElementById('incomeCancelBtn').addEventListener('click', function () {
         resetIncomeForm();
+        hideFormAndShowTypeSelector();
     });
 
     // 지출 탭 전환
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const tab = this.getAttribute('data-tab');
 
             // 탭 버튼 활성화
@@ -143,7 +146,7 @@ function setupEventListeners() {
 
     // 비용 계정 버튼 클릭
     document.querySelectorAll('.account-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
             selectedExpenseAccount = this.getAttribute('data-account');
@@ -153,7 +156,7 @@ function setupEventListeners() {
 
     // 지불 수단 버튼 클릭
     document.querySelectorAll('.payment-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
             selectedPaymentMethod = this.getAttribute('data-account');
@@ -167,15 +170,14 @@ function setupEventListeners() {
     document.getElementById('expenseSubmitBtn').addEventListener('click', handleExpenseSubmit);
 
     // 지출 취소 버튼
-    document.getElementById('expenseCancelBtn').addEventListener('click', function() {
-        hideAllForms();
-        showTypeSelector();
+    document.getElementById('expenseCancelBtn').addEventListener('click', function () {
         resetExpenseForm();
+        hideFormAndShowTypeSelector();
     });
 
     // 구입 탭 전환
     document.querySelectorAll('.purchase-form .tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const tab = this.getAttribute('data-tab');
 
             // 탭 버튼 활성화
@@ -192,7 +194,7 @@ function setupEventListeners() {
 
     // 지불 방식 모드 전환
     document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const mode = this.getAttribute('data-mode');
 
             // 모드 버튼 활성화
@@ -211,7 +213,7 @@ function setupEventListeners() {
 
     // 단일 지불 수단 버튼
     document.querySelectorAll('.payment-method-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
             selectedSinglePaymentMethod = this.getAttribute('data-method');
@@ -226,15 +228,14 @@ function setupEventListeners() {
     document.getElementById('purchaseSubmitBtn').addEventListener('click', handlePurchaseSubmit);
 
     // 구입 취소 버튼
-    document.getElementById('purchaseCancelBtn').addEventListener('click', function() {
-        hideAllForms();
-        showTypeSelector();
+    document.getElementById('purchaseCancelBtn').addEventListener('click', function () {
         resetPurchaseForm();
+        hideFormAndShowTypeSelector();
     });
 
     // 판매 탭 전환
     document.querySelectorAll('.sale-form .tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const tab = this.getAttribute('data-tab');
 
             // 탭 버튼 활성화
@@ -252,7 +253,7 @@ function setupEventListeners() {
 
     // 수입 방법 버튼
     document.querySelectorAll('.receive-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.receive-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
             selectedReceiveMethod = this.getAttribute('data-method');
@@ -263,15 +264,14 @@ function setupEventListeners() {
     document.getElementById('saleSubmitBtn').addEventListener('click', handleSaleSubmit);
 
     // 판매 취소 버튼
-    document.getElementById('saleCancelBtn').addEventListener('click', function() {
-        hideAllForms();
-        showTypeSelector();
+    document.getElementById('saleCancelBtn').addEventListener('click', function () {
         resetSaleForm();
+        hideFormAndShowTypeSelector();
     });
 
     // 투자 탭 전환
     document.querySelectorAll('.investment-form .tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const tab = this.getAttribute('data-tab');
             this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
@@ -283,7 +283,7 @@ function setupEventListeners() {
 
     // 투자 지불 수단 버튼
     document.querySelectorAll('.invest-payment-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.invest-payment-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
             selectedInvestPaymentMethod = this.getAttribute('data-method');
@@ -294,15 +294,14 @@ function setupEventListeners() {
     document.getElementById('investmentSubmitBtn').addEventListener('click', handleInvestmentSubmit);
 
     // 투자 취소 버튼
-    document.getElementById('investmentCancelBtn').addEventListener('click', function() {
-        hideAllForms();
-        showTypeSelector();
+    document.getElementById('investmentCancelBtn').addEventListener('click', function () {
         resetInvestmentForm();
+        hideFormAndShowTypeSelector();
     });
 
     // 회수 받을 방법 버튼
     document.querySelectorAll('.collect-receive-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.collect-receive-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
             selectedCollectReceiveMethod = this.getAttribute('data-method');
@@ -322,10 +321,9 @@ function setupEventListeners() {
     document.getElementById('collectionSubmitBtn').addEventListener('click', handleCollectionSubmit);
 
     // 회수 취소 버튼
-    document.getElementById('collectionCancelBtn').addEventListener('click', function() {
-        hideAllForms();
-        showTypeSelector();
+    document.getElementById('collectionCancelBtn').addEventListener('click', function () {
         resetCollectionForm();
+        hideFormAndShowTypeSelector();
     });
 
     // 폼 제출
@@ -349,12 +347,101 @@ function setupEventListeners() {
     document.getElementById('clearFilter').addEventListener('click', clearFilter);
 
     // 금액 자동 동기화 (차변 입력 시 대변도 동일하게)
-    document.getElementById('debitAmount').addEventListener('input', function(e) {
+    document.getElementById('debitAmount').addEventListener('input', function (e) {
         document.getElementById('creditAmount').value = e.target.value;
     });
 }
 
 // 거래 유형 선택 처리
+function handleTypeSelectionWithAnimation(clickedButton, type) {
+    const typeSelector = document.querySelector('.transaction-type-selector');
+
+    // 1. Selector Fade Out
+    typeSelector.classList.add('fade-out');
+
+    currentSelectedButton = clickedButton;
+    currentTransactionType = type;
+
+    // 2. Wait for fade out, then hide selector and show form
+    setTimeout(() => {
+        typeSelector.style.display = 'none';
+        showFormWithAnimation(type);
+    }, 400); // 0.4s matches CSS transition
+}
+
+function showFormWithAnimation(type) {
+    let formElement;
+
+    if (type === 'income') {
+        formElement = document.querySelector('.income-form');
+    } else if (type === 'expense') {
+        formElement = document.querySelector('.expense-form');
+        renderLiabilityList();
+    } else if (type === 'purchase') {
+        formElement = document.querySelector('.purchase-form');
+    } else if (type === 'sale') {
+        formElement = document.querySelector('.sale-form');
+        renderSaleAssetList();
+        renderSaleInventoryList();
+    } else if (type === 'investment') {
+        formElement = document.querySelector('.investment-form');
+    } else if (type === 'collection') {
+        formElement = document.querySelector('.collection-form');
+        renderInvestmentCollectionList();
+    }
+
+    if (formElement) {
+        formElement.style.display = 'block';
+        // Need a slight delay to allow display:block to apply before opacity transition
+        requestAnimationFrame(() => {
+            formElement.classList.add('show');
+        });
+    }
+}
+
+function hideFormAndShowTypeSelector() {
+    const allForms = [
+        '.income-form', '.expense-form', '.purchase-form',
+        '.sale-form', '.investment-form', '.collection-form'
+    ];
+
+    let currentForm = null;
+    allForms.forEach(selector => {
+        const form = document.querySelector(selector);
+        if (form.style.display === 'block') {
+            currentForm = form;
+        }
+    });
+
+    if (currentForm) {
+        // 1. Form Fade Out
+        currentForm.classList.remove('show');
+        currentForm.classList.add('hide'); // Optional, mainly for specific transforms if any
+
+        setTimeout(() => {
+            currentForm.style.display = 'none';
+            currentForm.classList.remove('hide');
+            showTypeSelectorWithAnimation();
+        }, 400);
+    } else {
+        showTypeSelectorWithAnimation();
+    }
+}
+
+function showTypeSelectorWithAnimation() {
+    const typeSelector = document.querySelector('.transaction-type-selector');
+
+    typeSelector.style.display = 'block';
+
+    // Force reflow or tiny delay ensuring display:block is registered
+    requestAnimationFrame(() => {
+        typeSelector.classList.remove('fade-out');
+    });
+
+    currentSelectedButton = null;
+    currentTransactionType = null;
+}
+
 function handleTypeSelection(type) {
     hideAllForms();
 
@@ -379,21 +466,28 @@ function handleTypeSelection(type) {
 
 // 모든 폼 숨기기
 function hideAllForms() {
-    document.querySelector('.transaction-type-selector').style.display = 'none';
-    document.querySelector('.income-form').style.display = 'none';
-    document.querySelector('.expense-form').style.display = 'none';
-    document.querySelector('.purchase-form').style.display = 'none';
-    document.querySelector('.sale-form').style.display = 'none';
-    document.querySelector('.investment-form').style.display = 'none';
-    document.querySelector('.collection-form').style.display = 'none';
-    document.querySelector('.transaction-form').style.display = 'none';
-}
+    const typeSelector = document.querySelector('.transaction-type-selector');
+    const allForms = [
+        document.querySelector('.income-form'),
+        document.querySelector('.expense-form'),
+        document.querySelector('.purchase-form'),
+        document.querySelector('.sale-form'),
+        document.querySelector('.investment-form'),
+        document.querySelector('.collection-form'),
+        document.querySelector('.transaction-form')
+    ];
 
+    typeSelector.style.display = 'none';
+
+    allForms.forEach(form => {
+        form.style.display = 'none';
+        form.classList.remove('show', 'hide');
+    });
+}
 // 타입 선택 버튼 표시
 function showTypeSelector() {
-    document.querySelector('.transaction-type-selector').style.display = 'block';
+    showTypeSelectorWithAnimation();
 }
-
 // 수입 폼 초기화
 function resetIncomeForm() {
     selectedAsset = null;
@@ -436,9 +530,9 @@ function handleIncomeSubmit() {
     updateSummary();
 
     // 폼 초기화 및 타입 선택 화면으로
-    hideAllForms();
-    showTypeSelector();
     resetIncomeForm();
+
+    hideFormAndShowTypeSelector();
 
     alert('수입이 등록되었습니다.');
 }
@@ -506,7 +600,7 @@ function renderLiabilityList() {
 
     // 부채 항목 클릭 이벤트
     document.querySelectorAll('.liability-item').forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             document.querySelectorAll('.liability-item').forEach(i => i.classList.remove('selected'));
             this.classList.add('selected');
             selectedLiabilityId = this.getAttribute('data-id');
@@ -587,9 +681,9 @@ function handleExpenseSubmit() {
     updateSummary();
 
     // 폼 초기화 및 타입 선택 화면으로
-    hideAllForms();
-    showTypeSelector();
     resetExpenseForm();
+
+    hideFormAndShowTypeSelector();
 
     alert('지출이 등록되었습니다.');
 }
@@ -838,9 +932,10 @@ function handlePurchaseSubmit() {
     renderTransactions();
     updateSummary();
 
-    hideAllForms();
-    showTypeSelector();
     resetPurchaseForm();
+
+
+    hideFormAndShowTypeSelector();
 
     alert('구입이 등록되었습니다.');
 }
@@ -886,7 +981,7 @@ function renderSaleAssetList() {
 
     // 판매 항목 클릭 이벤트
     document.querySelectorAll('#assetSaleList .sale-item').forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             document.querySelectorAll('#assetSaleList .sale-item').forEach(i => i.classList.remove('selected'));
             this.classList.add('selected');
             selectedSaleItemId = this.getAttribute('data-id');
@@ -913,7 +1008,7 @@ function renderSaleInventoryList() {
 
     // 판매 항목 클릭 이벤트
     document.querySelectorAll('#inventorySaleList .sale-item').forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             document.querySelectorAll('#inventorySaleList .sale-item').forEach(i => i.classList.remove('selected'));
             this.classList.add('selected');
             selectedSaleItemId = this.getAttribute('data-id');
@@ -1116,9 +1211,10 @@ function handleSaleSubmit() {
     renderTransactions();
     updateSummary();
 
-    hideAllForms();
-    showTypeSelector();
     resetSaleForm();
+
+
+    hideFormAndShowTypeSelector();
 
     alert('판매가 등록되었습니다.');
 }
@@ -1243,9 +1339,10 @@ function handleInvestmentSubmit() {
     renderTransactions();
     updateSummary();
 
-    hideAllForms();
-    showTypeSelector();
     resetInvestmentForm();
+
+
+    hideFormAndShowTypeSelector();
 
     alert('투자가 등록되었습니다.');
 }
@@ -1281,7 +1378,7 @@ function renderInvestmentCollectionList() {
 
     // 회수 항목 클릭 이벤트
     document.querySelectorAll('#investmentCollectionList .sale-item').forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             document.querySelectorAll('#investmentCollectionList .sale-item').forEach(i => i.classList.remove('selected'));
             this.classList.add('selected');
             selectedCollectionItemId = this.getAttribute('data-id');
@@ -1308,7 +1405,7 @@ function renderLiabilityCollectionList() {
 
     // 부채 항목 클릭 이벤트
     document.querySelectorAll('#liabilityCollectionList .liability-item').forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             document.querySelectorAll('#liabilityCollectionList .liability-item').forEach(i => i.classList.remove('selected'));
             this.classList.add('selected');
             selectedCollectionLiabilityId = this.getAttribute('data-id');
@@ -1463,9 +1560,10 @@ function handleCollectionSubmit() {
     renderTransactions();
     updateSummary();
 
-    hideAllForms();
-    showTypeSelector();
     resetCollectionForm();
+
+
+    hideFormAndShowTypeSelector();
 
     alert('회수가 등록되었습니다.');
 }
@@ -1473,7 +1571,7 @@ function handleCollectionSubmit() {
 // 거래 제출 처리
 function handleSubmit(e) {
     e.preventDefault();
-    
+
     const transaction = {
         id: editingId || Date.now().toString(),
         date: document.getElementById('date').value,
@@ -1483,13 +1581,13 @@ function handleSubmit(e) {
         creditAccount: document.getElementById('creditAccount').value,
         creditAmount: parseFloat(document.getElementById('creditAmount').value)
     };
-    
+
     // 차변과 대변 금액이 일치하는지 확인
     if (transaction.debitAmount !== transaction.creditAmount) {
         alert('차변과 대변의 금액이 일치해야 합니다.');
         return;
     }
-    
+
     if (editingId) {
         // 수정
         const index = transactions.findIndex(t => t.id === editingId);
@@ -1499,10 +1597,10 @@ function handleSubmit(e) {
         // 추가
         transactions.push(transaction);
     }
-    
+
     // 날짜순 정렬
     transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
+
     saveToLocalStorage();
     renderTransactions();
     updateSummary();
@@ -1513,12 +1611,12 @@ function handleSubmit(e) {
 function renderTransactions(filteredTransactions = null) {
     const tbody = document.getElementById('transactionBody');
     const dataToRender = filteredTransactions || transactions;
-    
+
     if (dataToRender.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: #999;">등록된 거래가 없습니다.</td></tr>';
         return;
     }
-    
+
     tbody.innerHTML = dataToRender.map(transaction => `
         <tr>
             <td>${transaction.date}</td>
@@ -1539,7 +1637,7 @@ function renderTransactions(filteredTransactions = null) {
 function editTransaction(id) {
     const transaction = transactions.find(t => t.id === id);
     if (!transaction) return;
-    
+
     editingId = id;
     document.getElementById('date').value = transaction.date;
     document.getElementById('description').value = transaction.description;
@@ -1547,7 +1645,7 @@ function editTransaction(id) {
     document.getElementById('debitAmount').value = transaction.debitAmount;
     document.getElementById('creditAccount').value = transaction.creditAccount;
     document.getElementById('creditAmount').value = transaction.creditAmount;
-    
+
     // 폼으로 스크롤
     document.querySelector('.transaction-form').scrollIntoView({ behavior: 'smooth' });
 }
@@ -1555,7 +1653,7 @@ function editTransaction(id) {
 // 거래 삭제
 function deleteTransaction(id) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
-    
+
     transactions = transactions.filter(t => t.id !== id);
     saveToLocalStorage();
     renderTransactions();
@@ -1572,28 +1670,28 @@ function resetForm() {
 // 계정별 잔액 계산 및 표시
 function updateSummary() {
     const balances = {};
-    
+
     transactions.forEach(transaction => {
         // 차변 (증가)
         if (!balances[transaction.debitAccount]) {
             balances[transaction.debitAccount] = 0;
         }
         balances[transaction.debitAccount] += transaction.debitAmount;
-        
+
         // 대변 (감소)
         if (!balances[transaction.creditAccount]) {
             balances[transaction.creditAccount] = 0;
         }
         balances[transaction.creditAccount] -= transaction.creditAmount;
     });
-    
+
     const summaryDiv = document.getElementById('accountSummary');
-    
+
     if (Object.keys(balances).length === 0) {
         summaryDiv.innerHTML = '<p style="color: #999; grid-column: 1/-1;">거래를 추가하면 계정별 잔액이 표시됩니다.</p>';
         return;
     }
-    
+
     summaryDiv.innerHTML = Object.entries(balances)
         .map(([account, balance]) => {
             const type = accountTypes[account] || 'asset';
@@ -1611,19 +1709,19 @@ function updateSummary() {
 function applyFilter() {
     const month = document.getElementById('filterMonth').value;
     const account = document.getElementById('filterAccount').value;
-    
+
     let filtered = transactions;
-    
+
     if (month) {
         filtered = filtered.filter(t => t.date.startsWith(month));
     }
-    
+
     if (account) {
-        filtered = filtered.filter(t => 
+        filtered = filtered.filter(t =>
             t.debitAccount === account || t.creditAccount === account
         );
     }
-    
+
     renderTransactions(filtered);
 }
 
@@ -1648,10 +1746,10 @@ function exportToExcel() {
         alert('내보낼 거래 내역이 없습니다.');
         return;
     }
-    
+
     // 워크북 생성
     const wb = XLSX.utils.book_new();
-    
+
     // 거래 내역 시트
     const transactionData = transactions.map(t => ({
         '날짜': t.date,
@@ -1661,9 +1759,9 @@ function exportToExcel() {
         '대변계정': t.creditAccount,
         '대변금액': t.creditAmount
     }));
-    
+
     const ws1 = XLSX.utils.json_to_sheet(transactionData);
-    
+
     // 열 너비 설정
     ws1['!cols'] = [
         { wch: 12 },  // 날짜
@@ -1673,35 +1771,35 @@ function exportToExcel() {
         { wch: 15 },  // 대변계정
         { wch: 15 }   // 대변금액
     ];
-    
+
     XLSX.utils.book_append_sheet(wb, ws1, '거래내역');
-    
+
     // 계정별 잔액 시트
     const balances = {};
     transactions.forEach(transaction => {
         if (!balances[transaction.debitAccount]) balances[transaction.debitAccount] = 0;
         if (!balances[transaction.creditAccount]) balances[transaction.creditAccount] = 0;
-        
+
         balances[transaction.debitAccount] += transaction.debitAmount;
         balances[transaction.creditAccount] -= transaction.creditAmount;
     });
-    
+
     const balanceData = Object.entries(balances).map(([account, balance]) => ({
         '계정': account,
-        '분류': accountTypes[account] === 'asset' ? '자산' : 
-                accountTypes[account] === 'expense' ? '비용' : '수익',
+        '분류': accountTypes[account] === 'asset' ? '자산' :
+            accountTypes[account] === 'expense' ? '비용' : '수익',
         '잔액': Math.abs(balance)
     }));
-    
+
     const ws2 = XLSX.utils.json_to_sheet(balanceData);
     ws2['!cols'] = [
         { wch: 15 },  // 계정
         { wch: 10 },  // 분류
         { wch: 15 }   // 잔액
     ];
-    
+
     XLSX.utils.book_append_sheet(wb, ws2, '계정별잔액');
-    
+
     // 파일 저장
     const fileName = `가계부_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
@@ -1711,18 +1809,18 @@ function exportToExcel() {
 function importFromExcel(e) {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     const reader = new FileReader();
-    
-    reader.onload = function(e) {
+
+    reader.onload = function (e) {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            
+
             // 첫 번째 시트 읽기
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-            
+
             // 데이터 변환
             const importedTransactions = jsonData.map((row, index) => ({
                 id: Date.now().toString() + index,
@@ -1733,18 +1831,18 @@ function importFromExcel(e) {
                 creditAccount: row['대변계정'] || row['creditAccount'] || '',
                 creditAmount: parseFloat(row['대변금액'] || row['creditAmount'] || 0)
             }));
-            
+
             // 유효성 검사
-            const valid = importedTransactions.every(t => 
+            const valid = importedTransactions.every(t =>
                 t.date && t.description && t.debitAccount && t.creditAccount &&
                 t.debitAmount > 0 && t.creditAmount > 0
             );
-            
+
             if (!valid) {
                 alert('엑셀 파일의 형식이 올바르지 않습니다. 필수 항목을 확인해주세요.');
                 return;
             }
-            
+
             // 기존 데이터와 병합할지 확인
             if (transactions.length > 0) {
                 if (confirm('기존 데이터에 추가하시겠습니까? (취소하면 기존 데이터가 삭제됩니다)')) {
@@ -1755,23 +1853,23 @@ function importFromExcel(e) {
             } else {
                 transactions = importedTransactions;
             }
-            
+
             // 날짜순 정렬
             transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
+
             saveToLocalStorage();
             renderTransactions();
             updateSummary();
-            
+
             alert(`${importedTransactions.length}개의 거래를 불러왔습니다.`);
         } catch (error) {
             console.error('Import error:', error);
             alert('파일을 불러오는 중 오류가 발생했습니다.');
         }
-        
+
         // 파일 입력 초기화
         e.target.value = '';
     };
-    
+
     reader.readAsArrayBuffer(file);
 }
