@@ -1,0 +1,104 @@
+<section class="transaction-list">
+    <h2>거래 내역 및 보고서</h2>
+
+    <!-- Filter Section (Date Range) -->
+    <div class="filter-section">
+        <label>기간 설정:</label>
+        <input type="date" id="historyStartDate">
+        <span>~</span>
+        <input type="date" id="historyEndDate">
+        <button id="applyDateFilter" class="btn btn-secondary">조회</button>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-selector">
+        <button class="view-btn active" data-view="journal">분개장 (Journal)</button>
+        <button class="view-btn" data-view="income-statement">손익계산서 (I/S)</button>
+        <button class="view-btn" data-view="cash-flow">현금흐름표 (Cash Flow)</button>
+    </div>
+
+    <!-- View Containers -->
+
+    <!-- 1. Journal View -->
+    <div id="view-journal" class="history-view active">
+        <div class="table-wrapper">
+            <table id="transactionTable">
+                <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>적요</th>
+                        <th>차변 계정</th>
+                        <th>차변 금액</th>
+                        <th>대변 계정</th>
+                        <th>대변 금액</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionBody">
+                    <!-- 분개 내역 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. Income Statement View -->
+    <div id="view-income-statement" class="history-view" style="display: none;">
+        <div class="report-container">
+            <div class="report-summary">
+                <div class="report-card income">
+                    <h4>총 수익</h4>
+                    <span id="is-total-income">0원</span>
+                </div>
+                <div class="report-card expense">
+                    <h4>총 비용</h4>
+                    <span id="is-total-expense">0원</span>
+                </div>
+                <div class="report-card net">
+                    <h4>순이익</h4>
+                    <span id="is-net-income">0원</span>
+                </div>
+            </div>
+            <div class="report-details">
+                <div class="report-column">
+                    <h4>수익 내역</h4>
+                    <div id="is-income-list" class="bs-list"></div>
+                </div>
+                <div class="report-column">
+                    <h4>비용 내역</h4>
+                    <div id="is-expense-list" class="bs-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Cash Flow View -->
+    <div id="view-cash-flow" class="history-view" style="display: none;">
+        <div class="report-container">
+            <div class="report-summary">
+                <div class="report-card inflow">
+                    <h4>총 유입</h4>
+                    <span id="cf-total-inflow">0원</span>
+                </div>
+                <div class="report-card outflow">
+                    <h4>총 유출</h4>
+                    <span id="cf-total-outflow">0원</span>
+                </div>
+                <div class="report-card net">
+                    <h4>순현금흐름</h4>
+                    <span id="cf-net-flow">0원</span>
+                </div>
+            </div>
+            <div class="report-details">
+                <div class="report-column">
+                    <h4>현금 유입 (Inflows)</h4>
+                    <div id="cf-inflow-list" class="bs-list"></div>
+                </div>
+                <div class="report-column">
+                    <h4>현금 유출 (Outflows)</h4>
+                    <div id="cf-outflow-list" class="bs-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
