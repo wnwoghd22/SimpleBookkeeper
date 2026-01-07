@@ -1690,42 +1690,100 @@ function resetForm() {
     document.getElementById('date').valueAsDate = new Date();
 }
 
-// 계정별 잔액 계산 및 표시
+// 요약 정보 업데이트 (재무상태표 로직)
 function updateSummary() {
-    const balances = {};
+    const accountBalances = {};
+    let totalIncome = 0;
+    let totalExpense = 0;
 
-    transactions.forEach(transaction => {
-        // 차변 (증가)
-        if (!balances[transaction.debitAccount]) {
-            balances[transaction.debitAccount] = 0;
-        }
-        balances[transaction.debitAccount] += transaction.debitAmount;
+    // 1. 모든 계정 잔액 및 수익/비용 계산
+    transactions.forEach(t => {
+        // 차변: 자산 증가, 비용 발생, 부채 감소, 자본 감소
+        if (!accountBalances[t.debitAccount]) accountBalances[t.debitAccount] = 0;
+        accountBalances[t.debitAccount] += t.debitAmount;
 
-        // 대변 (감소)
-        if (!balances[transaction.creditAccount]) {
-            balances[transaction.creditAccount] = 0;
+        if (accountTypes[t.debitAccount] === 'expense') {
+            totalExpense += t.debitAmount;
         }
-        balances[transaction.creditAccount] -= transaction.creditAmount;
+
+        // 대변: 자산 감소, 비용 취소, 부채 증가, 자본 증가, 수익 발생
+        if (!accountBalances[t.creditAccount]) accountBalances[t.creditAccount] = 0;
+        accountBalances[t.creditAccount] -= t.creditAmount;
+
+        if (accountTypes[t.creditAccount] === 'income') {
+            totalIncome += t.creditAmount;
+        }
     });
 
-    const summaryDiv = document.getElementById('accountSummary');
+    // 2. 자산, 부채 분류
+    const assets = [];
+    const liabilities = [];
 
-    if (Object.keys(balances).length === 0) {
-        summaryDiv.innerHTML = '<p style="color: #999; grid-column: 1/-1;">거래를 추가하면 계정별 잔액이 표시됩니다.</p>';
-        return;
+    // 계정별 잔액을 자산/부채로 분류
+    for (const [account, balance] of Object.entries(accountBalances)) {
+        if (balance === 0) continue; // 잔액 0원 생략
+
+        const type = accountTypes[account];
+        if (type === 'asset') {
+            // 자산은 차변 잔액(+)이 정상
+            assets.push({ name: account, amount: balance });
+        } else if (type === 'liability') {
+            // 부채는 대변 잔액(-)이 정상이므로 절대값 처리하여 표시
+            liabilities.push({ name: account, amount: Math.abs(balance) });
+        }
     }
 
-    summaryDiv.innerHTML = Object.entries(balances)
-        .map(([account, balance]) => {
-            const type = accountTypes[account] || 'asset';
-            return `
-                <div class="account-card ${type}">
-                    <h3>${account}</h3>
-                    <div class="balance">${formatCurrency(Math.abs(balance))}</div>
-                </div>
-            `;
-        })
-        .join('');
+    // 3. 순자산 (자본) 계산
+    // Assets = Liabilities + Equity  =>  Equity = Assets - Liabilities
+    const totalAssets = assets.reduce((sum, item) => sum + item.amount, 0);
+    const totalLiabilities = liabilities.reduce((sum, item) => sum + item.amount, 0);
+
+    const netAssets = totalAssets - totalLiabilities;
+
+    // 4. DOM 렌더링
+    const assetsList = document.getElementById('bs-assets-list');
+    const liabilitiesList = document.getElementById('bs-liabilities-list');
+    const equityList = document.getElementById('bs-equity-list');
+
+    // 자산 렌더링
+    if (assets.length > 0) {
+        assetsList.innerHTML = assets.map(item => `
+            <div class="bs-item">
+                <span>${item.name}</span>
+                <span class="amount">${formatCurrency(item.amount)}</span>
+            </div>
+        `).join('');
+    } else {
+        assetsList.innerHTML = '<p class="empty-message" style="color: #999; font-style: italic;">자산이 없습니다.</p>';
+    }
+
+    // 부채 렌더링
+    if (liabilities.length > 0) {
+        liabilitiesList.innerHTML = liabilities.map(item => `
+            <div class="bs-item">
+                <span>${item.name}</span>
+                <span class="amount">${formatCurrency(item.amount)}</span>
+            </div>
+        `).join('');
+    } else {
+        liabilitiesList.innerHTML = '<p class="empty-message" style="color: #999; font-style: italic;">부채가 없습니다.</p>';
+    }
+
+    // 순자산 렌더링 (이익잉여금 하나로 표시)
+    equityList.innerHTML = `
+        <div class="bs-item">
+            <span>진짜 내 돈</span>
+            <span class="amount ${netAssets < 0 ? 'negative-amount' : ''}">${formatCurrency(netAssets)}</span>
+        </div>
+    `;
+
+    // 5. 합계 업데이트
+    document.getElementById('bs-total-assets').innerText = formatCurrency(totalAssets);
+    document.getElementById('bs-total-liabilities').innerText = formatCurrency(totalLiabilities);
+    document.getElementById('bs-total-equity').innerText = formatCurrency(netAssets);
+
+    const totalLiabilitiesEquity = totalLiabilities + netAssets;
+    document.getElementById('bs-total-liabilities-equity').innerText = formatCurrency(totalLiabilitiesEquity);
 }
 
 // 필터 적용

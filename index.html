@@ -458,14 +458,56 @@
             <!-- 탭 3: 자산 현황 -->
             <div id="tab-balance" class="main-tab-content">
                 <section class="summary">
-                    <h2>계정별 잔액</h2>
-                    <div id="accountSummary" class="summary-grid">
-                        <!-- 계정별 잔액이 여기 표시됩니다 -->
+                    <h2>재무상태표 (Balance Sheet)</h2>
+                    <div class="balance-sheet-container">
+                        <!-- 왼쪽: 자산 -->
+                        <div class="bs-column assets-column">
+                            <h3>자산 (Assets)</h3>
+                            <div id="bs-assets-list" class="bs-list">
+                                <!-- 자산 항목들이 여기 표시됩니다 -->
+                            </div>
+                            <div class="bs-total">
+                                <span>합계</span>
+                                <span id="bs-total-assets">0원</span>
+                            </div>
+                        </div>
+
+                        <!-- 오른쪽: 부채 및 순자산 -->
+                        <div class="bs-column liabilities-equity-column">
+                            <!-- 부채 섹션 -->
+                            <div class="bs-section">
+                                <h3>부채 (Liabilities)</h3>
+                                <div id="bs-liabilities-list" class="bs-list">
+                                    <!-- 부채 항목들이 여기 표시됩니다 -->
+                                </div>
+                                <div class="bs-subtotal">
+                                    <span>합계</span>
+                                    <span id="bs-total-liabilities">0원</span>
+                                </div>
+                            </div>
+
+                            <!-- 순자산 섹션 (구 자본) -->
+                            <div class="bs-section">
+                                <h3>순자산 (Net Assets)</h3>
+                                <div id="bs-equity-list" class="bs-list">
+                                    <!-- 순자산(이익잉여금 등)이 여기 표시됩니다 -->
+                                </div>
+                                <div class="bs-subtotal">
+                                    <span>합계</span>
+                                    <span id="bs-total-equity">0원</span>
+                                </div>
+                            </div>
+
+                            <!-- 우측 총계 (부채 + 순자산) -->
+                            <div class="bs-total-main">
+                                <span>합계 (부채 + 순자산)</span>
+                                <span id="bs-total-liabilities-equity">0원</span>
+                            </div>
+                        </div>
                     </div>
-            </div>
-            </section>
-    </div> <!-- End of #tab-balance -->
-    </main>
+                </section>
+            </div> <!-- End of #tab-balance -->
+        </main>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
