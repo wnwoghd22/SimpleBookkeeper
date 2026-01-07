@@ -1083,3 +1083,114 @@ tbody tr:hover {
 .negative-amount {
     color: #e74c3c !important;
 }
+
+/* History Tab Overrides */
+.view-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.view-btn {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.view-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.report-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.report-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.report-card {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.report-card span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.report-card.income,
+.report-card.inflow {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.report-card.expense,
+.report-card.outflow {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.report-card.net {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.report-details {
+    display: flex;
+    gap: 30px;
+}
+
+.report-column {
+    flex: 1;
+}
+
+.report-column h4 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-column h4::after {
+    content: '▼';
+    font-size: 12px;
+    transition: transform 0.3s;
+}
+
+.report-column h4.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+.bs-list {
+    transition: max-height 0.3s ease-out;
+}
+
+.bs-list.collapsed {
+    display: none;
+}

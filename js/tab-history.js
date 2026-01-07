@@ -47,6 +47,17 @@ export function initHistoryTab() {
         });
     });
 
+    // Collapsible Sections
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+        header.addEventListener('click', function () {
+            this.classList.toggle('collapsed');
+            const list = this.nextElementSibling;
+            if (list && list.classList.contains('bs-list')) {
+                list.classList.toggle('collapsed');
+            }
+        });
+    });
+
     // Initial Render
     render();
 }

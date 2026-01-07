@@ -12,9 +12,9 @@
 
     <!-- View Toggle -->
     <div class="view-selector">
-        <button class="view-btn active" data-view="journal">분개장 (Journal)</button>
-        <button class="view-btn" data-view="income-statement">손익계산서 (I/S)</button>
-        <button class="view-btn" data-view="cash-flow">현금흐름표 (Cash Flow)</button>
+        <button class="view-btn active" data-view="journal">거래 목록</button>
+        <button class="view-btn" data-view="income-statement">지출 및 수입</button>
+        <button class="view-btn" data-view="cash-flow">현금흐름표</button>
     </div>
 
     <!-- View Containers -->
@@ -41,30 +41,30 @@
         </div>
     </div>
 
-    <!-- 2. Income Statement View -->
+    <!-- 2. Expenses & Income View (Formerly Income Statement) -->
     <div id="view-income-statement" class="history-view" style="display: none;">
         <div class="report-container">
             <div class="report-summary">
                 <div class="report-card income">
-                    <h4>총 수익</h4>
+                    <h4>총 수입</h4>
                     <span id="is-total-income">0원</span>
                 </div>
                 <div class="report-card expense">
-                    <h4>총 비용</h4>
+                    <h4>총 지출</h4>
                     <span id="is-total-expense">0원</span>
                 </div>
                 <div class="report-card net">
-                    <h4>순이익</h4>
+                    <h4>순수입</h4>
                     <span id="is-net-income">0원</span>
                 </div>
             </div>
             <div class="report-details">
                 <div class="report-column">
-                    <h4>수익 내역</h4>
+                    <h4 class="collapsible-header">수입 목록</h4>
                     <div id="is-income-list" class="bs-list"></div>
                 </div>
                 <div class="report-column">
-                    <h4>비용 내역</h4>
+                    <h4 class="collapsible-header">지출 목록</h4>
                     <div id="is-expense-list" class="bs-list"></div>
                 </div>
             </div>
@@ -90,11 +90,11 @@
             </div>
             <div class="report-details">
                 <div class="report-column">
-                    <h4>현금 유입 (Inflows)</h4>
+                    <h4 class="collapsible-header">현금 유입</h4>
                     <div id="cf-inflow-list" class="bs-list"></div>
                 </div>
                 <div class="report-column">
-                    <h4>현금 유출 (Outflows)</h4>
+                    <h4 class="collapsible-header">현금 유출</h4>
                     <div id="cf-outflow-list" class="bs-list"></div>
                 </div>
             </div>
