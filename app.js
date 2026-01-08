@@ -2,6 +2,7 @@ import { loadFromLocalStorage, getTransactions } from './js/store.js';
 import { initInputTab } from './js/tab-input.js';
 import { initHistoryTab, initHistoryTab as refreshHistoryTab } from './js/tab-history.js'; // Hacky alias for now
 import { initBalanceTab, updateSummary } from './js/tab-balance.js';
+import { initStatisticsTab } from './js/tab-statistics.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Load Data
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initInputTab();
     initHistoryTab();
     initBalanceTab();
+    initStatisticsTab();
 
     // 4. Setup Main Tab Switching
     setupMainNavigation();
@@ -29,7 +31,8 @@ async function loadTemplates() {
     await Promise.all([
         load('tab-input', 'templates/input.html'),
         load('tab-history', 'templates/history.html'),
-        load('tab-balance', 'templates/balance.html')
+        load('tab-balance', 'templates/balance.html'),
+        load('tab-statistics', 'templates/statistics.html')
     ]);
 }
 
@@ -67,6 +70,10 @@ function setupMainNavigation() {
                 // Implemented render() in initHistoryTab, so...
                 // Better approach: Dispatch a custom event?
                 document.getElementById('applyDateFilter').click(); // trigger render
+            } else if (tabId === 'tab-statistics') {
+                // Refresh statistics tab
+                const btn = document.getElementById('applyStatsFilter');
+                if (btn) btn.click();
             }
         });
     });

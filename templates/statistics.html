@@ -1,0 +1,34 @@
+<section class="statistics-section">
+    <h2>재무 추이 분석</h2>
+
+    <!-- 컨트롤 패널 -->
+    <div class="filter-section">
+        <!-- 기간 유형 선택 -->
+        <div class="period-type-selector">
+            <button class="period-btn active" data-period="monthly">월별</button>
+            <button class="period-btn" data-period="yearly">연별</button>
+        </div>
+
+        <!-- 날짜 범위 선택 -->
+        <label>기간 설정:</label>
+        <input type="date" id="statsStartDate">
+        <span>~</span>
+        <input type="date" id="statsEndDate">
+        <button id="applyStatsFilter" class="btn btn-secondary">조회</button>
+    </div>
+
+    <!-- 차트 컨테이너 -->
+    <div class="charts-container">
+        <!-- 순자산 변화 추이 -->
+        <div class="chart-wrapper">
+            <h3>순자산 변화 추이</h3>
+            <canvas id="netAssetsChart"></canvas>
+        </div>
+
+        <!-- 수입/지출 추이 -->
+        <div class="chart-wrapper">
+            <h3>수입 및 지출 추이</h3>
+            <canvas id="incomeExpenseChart"></canvas>
+        </div>
+    </div>
+</section>

@@ -1194,3 +1194,69 @@ tbody tr:hover {
 .bs-list.collapsed {
     display: none;
 }
+
+/* ==================== 통계 탭 스타일 ==================== */
+.statistics-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.chart-wrapper {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.chart-wrapper h3 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.chart-wrapper canvas {
+    max-height: 400px;
+}
+
+/* 기간 선택 버튼 */
+.period-type-selector {
+    display: flex;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.period-btn {
+    padding: 8px 16px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.period-btn:hover {
+    border-color: #3498db;
+}
+
+.period-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .chart-wrapper canvas {
+        max-height: 300px;
+    }
+}
