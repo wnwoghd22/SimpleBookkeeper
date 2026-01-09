@@ -47,14 +47,10 @@
                     <button class="tab-btn" data-tab="liability-accounts">부채 상환</button>
                 </div>
                 <div id="expense-accounts" class="tab-content active">
-                    <div class="account-buttons">
-                        <button class="account-btn" data-account="식비" data-tracked="false">식비</button>
-                        <button class="account-btn" data-account="교통비" data-tracked="false">교통비</button>
-                        <button class="account-btn" data-account="공과금" data-tracked="false">공과금</button>
-                        <button class="account-btn" data-account="통신비" data-tracked="false">통신비</button>
-                        <button class="account-btn" data-account="의료비" data-tracked="false">의료비</button>
-                        <button class="account-btn" data-account="문화생활비" data-tracked="false">문화생활비</button>
+                    <div class="account-buttons" id="expenseAccountButtons">
+                        <!-- 동적으로 렌더링됨 -->
                     </div>
+                    <button class="add-account-btn" data-type="expense">+ 비용 계정 추가</button>
                 </div>
                 <div id="liability-accounts" class="tab-content">
                     <div id="liabilityList" class="liability-list">

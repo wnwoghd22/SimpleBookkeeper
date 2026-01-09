@@ -1,5 +1,5 @@
-import { loadFromLocalStorage, getTransactions, setTransactions, accountTypes } from './js/store.js';
-import { initInputTab } from './js/tab-input.js';
+import { loadFromLocalStorage, getTransactions, setTransactions, accountTypes, getAccountTypes, getDefaultAccounts, getCustomAccounts, isDefaultAccount, removeCustomAccount } from './js/store.js';
+import { initInputTab, renderExpenseAccountButtons } from './js/tab-input.js';
 import { initHistoryTab, initHistoryTab as refreshHistoryTab } from './js/tab-history.js'; // Hacky alias for now
 import { initBalanceTab, updateSummary } from './js/tab-balance.js';
 import { initStatisticsTab } from './js/tab-statistics.js';
@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 5. Setup Excel Export/Import
     setupExcelFeatures();
+
+    // 6. Setup Account Management
+    setupAccountManagement();
 });
 
 async function loadTemplates() {
@@ -243,4 +246,106 @@ function importFromExcel(e) {
     };
 
     reader.readAsArrayBuffer(file);
+}
+
+// ===== Account Management =====
+
+function setupAccountManagement() {
+    const manageBtn = document.getElementById('manageAccountsBtn');
+    const modal = document.getElementById('manageAccountsModal');
+
+    if (!manageBtn || !modal) return;
+
+    manageBtn.addEventListener('click', () => {
+        renderAccountManageList();
+        modal.classList.add('show');
+    });
+
+    // Close button
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    // Close button in footer
+    document.getElementById('closeManageAccounts').addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    // Click outside to close
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+}
+
+function renderAccountManageList() {
+    const listDiv = document.getElementById('accountManageList');
+    const allAccounts = getAccountTypes();
+
+    // Group by type
+    const expenseAccounts = Object.entries(allAccounts).filter(([_, type]) => type === 'expense');
+    const incomeAccounts = Object.entries(allAccounts).filter(([_, type]) => type === 'income');
+
+    let html = '';
+
+    // Expense accounts
+    html += `
+        <div class="account-manage-section">
+            <h4>비용 계정</h4>
+            ${expenseAccounts.map(([name]) => renderAccountItem(name, 'expense')).join('')}
+        </div>
+    `;
+
+    // Income accounts
+    html += `
+        <div class="account-manage-section">
+            <h4>수입 계정</h4>
+            ${incomeAccounts.map(([name]) => renderAccountItem(name, 'income')).join('')}
+        </div>
+    `;
+
+    listDiv.innerHTML = html;
+
+    // Add delete event listeners
+    listDiv.querySelectorAll('.btn-delete-account').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const accountName = this.dataset.account;
+            if (confirm(`'${accountName}' 계정을 삭제하시겠습니까?`)) {
+                const result = removeCustomAccount(accountName);
+                if (result.success) {
+                    renderAccountManageList();
+                    renderExpenseAccountButtons();
+                    alert(`'${accountName}' 계정이 삭제되었습니다.`);
+                } else {
+                    alert(result.message);
+                }
+            }
+        });
+    });
+}
+
+function renderAccountItem(name, type) {
+    const isDefault = isDefaultAccount(name);
+    const typeLabel = type === 'expense' ? '비용' : '수입';
+
+    if (isDefault) {
+        return `
+            <div class="account-manage-item default">
+                <span>
+                    <span class="account-name">${name}</span>
+                </span>
+                <span class="default-badge">기본 계정</span>
+            </div>
+        `;
+    } else {
+        return `
+            <div class="account-manage-item">
+                <span>
+                    <span class="account-name">${name}</span>
+                </span>
+                <button class="btn-delete-account" data-account="${name}">삭제</button>
+            </div>
+        `;
+    }
 }

@@ -1,5 +1,5 @@
 import { generateUUID, formatCurrency } from './utils.js';
-import { addTransaction, addTrackedItem, getTrackedItems, updateTrackedItem, setTransactions, getTransactions } from './store.js';
+import { addTransaction, addTrackedItem, getTrackedItems, updateTrackedItem, setTransactions, getTransactions, getAccountTypes, addCustomAccount } from './store.js';
 
 // Local State (Module level)
 let currentSelectedButton = null;
@@ -25,6 +25,8 @@ let selectedCollectionLiabilityId = null;
 export function initInputTab() {
     setupTypeSelector();
     setupForms();
+    renderExpenseAccountButtons();
+    setupAddAccountButton();
 
     // Default Date
     const dateInput = document.getElementById('date');
@@ -142,17 +144,7 @@ function setupForms() {
 
     // --- Expense ---
     setupTabs('.expense-form');
-
-    const expenseAccountsDiv = document.getElementById('expense-accounts');
-    if (expenseAccountsDiv) {
-        expenseAccountsDiv.querySelectorAll('.account-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                expenseAccountsDiv.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedExpenseAccount = this.getAttribute('data-account');
-            });
-        });
-    }
+    // Note: expense account buttons are now rendered dynamically by renderExpenseAccountButtons()
 
     const paymentButtons = document.querySelectorAll('.payment-section .payment-btn');
     paymentButtons.forEach(btn => {
@@ -1012,4 +1004,101 @@ function resetCollectionForm() {
     document.querySelectorAll('.sale-item').forEach(b => b.classList.remove('selected'));
     const liabilitySection = document.getElementById('liabilityCollectionSection');
     if (liabilitySection) liabilitySection.style.display = 'none';
+}
+
+// ===== DYNAMIC ACCOUNT RENDERING =====
+
+export function renderExpenseAccountButtons() {
+    const container = document.getElementById('expenseAccountButtons');
+    if (!container) return;
+
+    const accountTypes = getAccountTypes();
+    const expenseAccounts = Object.entries(accountTypes)
+        .filter(([name, type]) => type === 'expense')
+        .map(([name]) => name);
+
+    container.innerHTML = expenseAccounts.map(account => `
+        <button class="account-btn" data-account="${account}" data-tracked="false">${account}</button>
+    `).join('');
+
+    // Add click event listeners
+    container.querySelectorAll('.account-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            container.querySelectorAll('.account-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedExpenseAccount = this.getAttribute('data-account');
+        });
+    });
+}
+
+function setupAddAccountButton() {
+    const addBtn = document.querySelector('.add-account-btn[data-type="expense"]');
+    if (!addBtn) return;
+
+    addBtn.addEventListener('click', () => {
+        showAddAccountModal('expense');
+    });
+}
+
+function showAddAccountModal(accountType) {
+    const modal = document.getElementById('addAccountModal');
+    const typeInput = document.getElementById('newAccountType');
+    const nameInput = document.getElementById('newAccountName');
+    const modalTitle = modal.querySelector('.modal-header h3');
+
+    typeInput.value = accountType;
+    nameInput.value = '';
+    modalTitle.textContent = accountType === 'expense' ? '비용 계정 추가' : '수입 계정 추가';
+
+    modal.classList.add('show');
+    nameInput.focus();
+
+    // Setup event handlers (only once)
+    if (!modal.dataset.initialized) {
+        modal.dataset.initialized = 'true';
+
+        // Close button
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        // Cancel button
+        document.getElementById('cancelAddAccount').addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        // Confirm button
+        document.getElementById('confirmAddAccount').addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            const type = typeInput.value;
+
+            if (!name) {
+                alert('계정명을 입력해주세요.');
+                return;
+            }
+
+            const result = addCustomAccount(name, type);
+            if (result.success) {
+                modal.classList.remove('show');
+                renderExpenseAccountButtons();
+                alert(`'${name}' 계정이 추가되었습니다.`);
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // Enter key
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('confirmAddAccount').click();
+            }
+        });
+
+        // Click outside to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
+        });
+    }
 }
